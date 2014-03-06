@@ -10,7 +10,7 @@ public class ShellGenerator : MonoBehaviour {
 
 	void Start () {
 
-		//Instantiate First Shell
+ 		//Instantiate First Shell
 		int pattern = Random.Range (0,3);
 		Debug.Log ("First Room: " + pattern);
 		if (pattern == 0){

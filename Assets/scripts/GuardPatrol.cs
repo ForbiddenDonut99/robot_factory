@@ -6,6 +6,8 @@ public class GuardPatrol : MonoBehaviour {
 	public GameObject player;
 	public float baseSpeed = 1f;
 	public float wallBuffer = 2f;
+	public int stepsInRoom = 0;
+	public GameObject lastNode;
 	float moveSpeed;
 
 	CharacterController guardController;
@@ -134,3 +136,18 @@ public class GuardPatrol : MonoBehaviour {
 		nextDirection = direction;
 	}
 }
+
+/* Hey, Zhan! as of right now, there's only a few thing left to implement the node system. You can use
+ * Utility.selectNode (gameobject, *distance to detect nodes within (a float)*, stepsInRoom, lastNode)
+ * to get a GameObject (a random eligible node within specified distance). If you increment stepsInRoom by one
+ * each time you select/move to one, it'll even move you in and out of rooms appropriately.
+ * I still haven't implemented a reset for that, because I'll have to do that in this code, and I don't wanna fuck around
+ * with it too much. The pseudo-code implementation will be:
+ * 
+ * if((Utility.SelectNode).GetComponent<NodeScript>().isSuper && lastNode.GetComponent<NodeScript>().isSuper){
+ * 		stepsInRoom = 0;
+ * 	}
+
+Because the node selection code depends on nodes being the last node and on/off, I can't test this yet. I managed
+to test it up to the part where it accurately senses all eligible nodes, but I haven't tested selection. If you can get the guard
+walking to/through nodes, I can finish this up. */
