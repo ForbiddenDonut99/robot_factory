@@ -1,9 +1,10 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\scripts\World Generation\ShellGenerator.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\scripts\NodeData.cs">
     <Files>
+      <File FileName="Assets\scripts\NodeData.cs" Line="10" Column="25" />
       <File FileName="Assets\scripts\World Generation\ShellGenerator.cs" Line="13" Column="2" />
-      <File FileName="Assets\scripts\Utility.cs" Line="12" Column="18" />
+      <File FileName="Assets\scripts\Utility.cs" Line="10" Column="35" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
