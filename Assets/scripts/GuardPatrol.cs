@@ -6,11 +6,31 @@ public class GuardPatrol : MonoBehaviour {
 	public GameObject player;
 	public float baseSpeed = 1f;
 	public float wallBuffer = 2f;
-	float moveSpeed;
+	public Texture2D fadeTexture;
 
 	CharacterController guardController;
 
+	// local movement vars
+	float moveSpeed;
 	Vector3 nextDirection = Vector3.zero;
+
+	// game over vars
+	bool isGameOver = false;
+	float alpha = 0;
+
+	// Handles Game Over
+	void OnGUI(){
+		if(isGameOver){
+			alpha += 0.2f * Time.deltaTime;  
+			alpha = Mathf.Clamp01(alpha);   
+			GUI.color = new Color(0, 0, 0, alpha);
+			GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), fadeTexture);
+
+			if(alpha >= 1.0f){
+				Application.LoadLevel(0);
+			}
+		}
+	}
 	
 	// Use this for initialization
 	void Start () {
@@ -20,11 +40,13 @@ public class GuardPatrol : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		// TODO: end the game instead
-		if(Vector3.Distance(transform.position, player.transform.position) < 1.2f){
-			Debug.Log("PLAYER CAUGHT");
+		if (isGameOver){
 			return;
-		}
+		}else if(Vector3.Distance(transform.position, player.transform.position) < 1.2f){
+			Debug.Log("PLAYER CAUGHT");
+			isGameOver = true;
+			return;
+		} 
 
 		if(chasePlayer()){
 //			Debug.Log("player detected");
@@ -125,6 +147,8 @@ public class GuardPatrol : MonoBehaviour {
 			nextDirection = directionList[rndnum];
 		}
 	}
+
+
 
 	// use these 2 functions to making it go a certain direction.
 	public void walkTowards(Transform targetTransform){
