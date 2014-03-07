@@ -33,7 +33,7 @@ public class Utility : MonoBehaviour {
 		int options = nodes.Length;
 		int superOptions = supers.Length;
 
-		float superWeight = 10/counter; //10 is a magic number right now. This is the amount of steps to take within a room.
+		float superWeight = 10/(counter+1); //10 is a magic number right now. This is the amount of steps to take within a room.
 
 		GameObject result = new GameObject();
 		if(options == 1) return lastNode; //if there's only one option, we're at a dead end, and we need to go back.

@@ -128,7 +128,7 @@ public class GuardPatrol : MonoBehaviour {
 		}
 	}
 
-	// use these 2 functions to making it go a certain direction.
+	// use these 2 functions to make the guard go a certain direction.
 	public void walkTowards(Transform targetTransform){
 		nextDirection = targetTransform.position - transform.position;
 	}
