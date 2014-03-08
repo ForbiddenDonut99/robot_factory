@@ -37,13 +37,7 @@ public class Utility : MonoBehaviour {
 			superOptions = supers.Length;
 		}
 		else superOptions = 0;
-
-<<<<<<< HEAD:Assets/scripts/Utility.cs
-		float superWeight = 10/(counter+1); //10 is a magic number right now. This is the amount of steps to take within a room.
-=======
 		float superWeight = counter/10; //10 is a magic number right now. This is the amount of steps to take within a room.
->>>>>>> PrettyPrettyTymko:Assets/scripts/Node Code!/Utility.cs
-
 		GameObject result = lastNode;
 		if(options == 1 && !lastNode.GetComponent<NodeScript>().isOff){
 			Debug.Log ("Returned to " + lastNode+ " because we hit a dead end.");
