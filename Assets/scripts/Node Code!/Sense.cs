@@ -3,10 +3,11 @@ using System.Collections;
 
 public class Sense : MonoBehaviour {
 
-	public static NodeData[] nearbyNodes (GameObject self, float distance){
+	public static GameObject[] nearbyNodes (GameObject self, float distance){
 		//creates a list of NodeData for all nodes within a given radius.
 		GameObject[] allNodes;
 		allNodes = GameObject.FindGameObjectsWithTag("Node");
+		if (allNodes[0] == null)Debug.Log ("poop");
 		int addIndex = 0;
 		int resultSize = 0;
 		GameObject[] tempList;
@@ -20,28 +21,25 @@ public class Sense : MonoBehaviour {
 			}
 		}
 		if (resultSize != 0){
-			NodeData[] resultList;
-			resultList = new NodeData[resultSize];
+			GameObject[] resultList;
+			resultList = new GameObject[resultSize];
 			for(int i = 0; i<resultSize; i++){
-				resultList[i] = new NodeData();
-			}
-			for(int i = 0; i<resultSize; i++){
-				resultList[i].node = tempList[i];
-				resultList[i].isSuper = tempList[i].GetComponent<NodeScript>().isSuper;
+				resultList[i] = tempList[i];
 			}
 			return resultList;
 		}
 		else return null;
 	}
-	public static GameObject[] superNodes (NodeData[] nodes){
+	public static GameObject[] superNodes (GameObject[] nodes){
 		//Extracts eligible super node game objects from a node data list.
+		if(nodes == null)return null;
 		GameObject[] tempList;
 		int resultSize = 0;
 		int addIndex = 0;
 		tempList = new GameObject[nodes.Length];
-		foreach(NodeData node in nodes){
-			if (node.isSuper){
-				tempList[addIndex] = node.node;
+		foreach(GameObject node in nodes){
+			if (node.GetComponent<NodeScript>().isSuper){
+				tempList[addIndex] = node;
 				addIndex++;
 				resultSize++;
 			}

@@ -26,17 +26,25 @@ public class Utility : MonoBehaviour {
 		//chance of selecting a super node increases. Also, will try not to
 		//go to the last node visited.
 		bool selected = false;
-		NodeData[] nodes;
+		int superOptions;
+		GameObject[] nodes;
 		nodes = Sense.nearbyNodes(self, distance);
+		if (nodes == null)return null;
 		GameObject[] supers;
 		supers = Sense.superNodes(nodes);
 		int options = nodes.Length;
-		int superOptions = supers.Length;
+		if (supers != null){
+			superOptions = supers.Length;
+		}
+		else superOptions = 0;
 
-		float superWeight = 10/counter; //10 is a magic number right now. This is the amount of steps to take within a room.
+		float superWeight = counter/10; //10 is a magic number right now. This is the amount of steps to take within a room.
 
-		GameObject result = new GameObject();
-		if(options == 1) return lastNode; //if there's only one option, we're at a dead end, and we need to go back.
+		GameObject result = lastNode;
+		if(options == 1 && !lastNode.GetComponent<NodeScript>().isOff){
+			Debug.Log ("Returned to " + lastNode+ " because we hit a dead end.");
+			return lastNode; //if there's only one option, we're at a dead end, and we need to go back.
+		}
 		else if(Random.value < superWeight && supers != null){//try to find a super node instead
 			while(!selected){
 				int choice = Random.Range (0,superOptions);
@@ -46,17 +54,19 @@ public class Utility : MonoBehaviour {
 				}
 				else selected = false;
 			}
+			Debug.Log ("We chose " + result+ " because we wanted a SuperNode.");
 			return result;
 		}
 		else if(nodes != null){//Settle for a normal node, possibly a super node.
 			while(!selected){
 				int choice = Random.Range (0,options);
-				if(nodes[choice].node != lastNode){
+				if(nodes[choice] != lastNode){
 					selected = true;
-					result =  nodes[choice].node;
+					result =  nodes[choice];
 				}
 				else selected = false;
 			}
+			Debug.Log (result+ " was chosen from "+options+" choices.");
 			return result;
 		}
 		else return null; //If there aren't any nodes in range, return null instead of crashing.
