@@ -4,16 +4,16 @@ using System.Collections;
 public class TestScript : MonoBehaviour {
 
 	//This is a temporary script. I'm using it to test out half-finished script snippets.
-
+	public float distance = 150f;
 	private int counter = 0;
 	void Start () {
 
-		NodeData[] surroundings;
-		surroundings = Sense.nearbyNodes(gameObject, 150f);
+		GameObject[] surroundings;
+		surroundings = Sense.nearbyNodes(gameObject, distance);
 		if(surroundings != null){
-			foreach(NodeData node in surroundings){
+			foreach(GameObject node in surroundings){
 				counter++;
-				Debug.Log (node + "" + counter);
+				Debug.Log (node + "was found!");
 			}
 		}
 		Debug.Log (counter + " nodes found.");
