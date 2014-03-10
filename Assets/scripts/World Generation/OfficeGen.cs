@@ -17,7 +17,7 @@ public class OfficeGen : MonoBehaviour {
 		for(float x = (relX-12);x<=(relX+12);x+=4){
 			for(float z = (relZ-12);z<=(relZ+12);z+=4){
 				rotation = (Random.Range (0,4)*90);
-				if((z != relZ-12 && x != relX)){
+				if((x != relX)){
 					if (Random.Range(0,101) <= cubicleChance){
 						Instantiate(cubiclePreFab, new Vector3(x,relY,z), Quaternion.Euler(new Vector3(270f, rotation, 0)));
 					}
