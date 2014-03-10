@@ -84,4 +84,16 @@ public class Sense : MonoBehaviour {
 		}
 		else return null;
 	}
+
+	public static bool player (GameObject self, GameObject player){
+		bool result = false;
+		RaycastHit hit = new RaycastHit();
+		if(Physics.Raycast(self.transform.position, player.transform.position - self.transform.position, out hit, 20f) &&
+		   Vector3.Angle (player.transform.position - self.transform.position, self.transform.forward) < 60f){
+			if (hit.transform.tag == "Player"){
+				result = true;
+			}
+		}
+		return result;
+	}
 }
