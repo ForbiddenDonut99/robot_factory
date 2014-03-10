@@ -154,8 +154,8 @@ public class RobotController: MonoBehaviour
 				Ray mouseRay = new Ray(playerCameraTransform.position, playerCameraTransform.forward);
 				RaycastHit rayHit = new RaycastHit();
 				if(Physics.Raycast(mouseRay, out rayHit, 200f)){
-					if (rayHit.transform.GetComponent<GuardPatrol>() != null){
-						rayHit.transform.GetComponent<GuardPatrol>().stun(5.0f);
+					if (rayHit.transform.GetComponent<TrialPatrol>() != null){
+						rayHit.transform.GetComponent<TrialPatrol>().stun(5.0f);
 					}
 				}
 				stunGunAmmo --;

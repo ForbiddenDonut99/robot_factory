@@ -87,7 +87,7 @@ public class GuardPatrol : MonoBehaviour {
 				transform.position = new Vector3(transform.position.x, transform.position.y + 0.5f, transform.position.z);
 			}
 			return;
-		}else if(Vector3.Distance(transform.position, player.transform.position) < 1.2f){
+		}else if(Utility.isInRange(gameObject, player, 1.2f)){
 			Debug.Log("PLAYER CAUGHT");
 			player.GetComponent<RobotController>().speed = 0.0f;
 			player.GetComponent<RobotController>().stunGunAmmo = 0;
