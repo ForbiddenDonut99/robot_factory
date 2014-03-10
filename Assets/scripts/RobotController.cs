@@ -19,6 +19,8 @@ public class RobotController: MonoBehaviour
 	Rect crosshairPosition;
 	Transform playerCameraTransform;
 
+	GUIText ammoText;
+
 	// others
 
     public float jumpSpeed = 4.0f;
@@ -50,6 +52,13 @@ public class RobotController: MonoBehaviour
 		playerCameraTransform = transform.Find("Main Camera").transform;
 		crosshairPosition = new Rect((Screen.width - crosshairTexture.width)/2,(Screen.height - crosshairTexture.height)/2, 
 		                             crosshairTexture.width, crosshairTexture.height);
+		GameObject ammoTextObj = new GameObject("ammoCounter");
+		ammoTextObj.transform.position = new Vector3(0.5f,0.5f,0f);
+		ammoText = (GUIText)ammoTextObj.AddComponent(typeof(GUIText));
+		ammoText.pixelOffset = new Vector2(-440, -260);
+		ammoText.fontSize = 18;
+		ammoText.color = Color.green;
+		ammoText.text = "Ammo: " + stunGunAmmo;
 
 		flashLight = transform.GetComponentInChildren<Light>();
 		flashLight.enabled = false;
@@ -139,12 +148,13 @@ public class RobotController: MonoBehaviour
 			if(stunGunAmmo > 0){
 				Ray mouseRay = new Ray(playerCameraTransform.position, playerCameraTransform.forward);
 				RaycastHit rayHit = new RaycastHit();
-				if(Physics.Raycast(mouseRay, out rayHit, 100f)){
+				if(Physics.Raycast(mouseRay, out rayHit, 200f)){
 					if (rayHit.transform.GetComponent<GuardPatrol>() != null){
 						rayHit.transform.GetComponent<GuardPatrol>().stun(5.0f);
 					}
 				}
 				stunGunAmmo --;
+				ammoText.text = "Ammo: " + stunGunAmmo;
 			}
 		}
 	}
@@ -159,6 +169,8 @@ public class RobotController: MonoBehaviour
 		if(stunGunAmmo > 0){
 			GUI.DrawTexture(crosshairPosition, crosshairTexture);
 		}
+
+//		// show flashlight battery
 //		GUI.Box(new Rect(10, 10, Screen.width/2, 20), lightBattery + "/" + maxBattery);
 	}
 	
@@ -181,6 +193,7 @@ public class RobotController: MonoBehaviour
 			// stun gun
 			int ammo = (int)PowerUpValue;
 			stunGunAmmo += ammo;
+			ammoText.text = "Ammo: " + stunGunAmmo;
 		}
 	}
 }
