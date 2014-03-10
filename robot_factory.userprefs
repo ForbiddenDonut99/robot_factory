@@ -1,12 +1,13 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets/scripts/GuardPatrol.cs">
     <Files>
-      <File FileName="Assets/scripts/RobotController.cs" Line="203" Column="21" />
-      <File FileName="Assets/scripts/PowerUp.cs" Line="6" Column="24" />
-      <File FileName="Assets/scripts/GuardPatrol.cs" Line="68" Column="29" />
-      <File FileName="Assets/scripts/Node Code!/NodeScript.cs" Line="22" Column="16" />
-      <File FileName="Assets/scripts/Flashlight.cs" Line="19" Column="4" />
+      <File FileName="Assets/scripts/RobotController.cs" Line="1" Column="1" />
+      <File FileName="Assets/scripts/PowerUp.cs" Line="1" Column="1" />
+      <File FileName="Assets/scripts/GuardPatrol.cs" Line="110" Column="20" />
+      <File FileName="Assets/scripts/Node Code!/NodeScript.cs" Line="25" Column="37" />
+      <File FileName="Assets/scripts/World Generation/OfficeGen.cs" Line="30" Column="4" />
+      <File FileName="Assets/scripts/Node Code!/Sense.cs" Line="23" Column="32" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

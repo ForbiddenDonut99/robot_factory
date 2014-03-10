@@ -7,7 +7,7 @@ public class Sense : MonoBehaviour {
 		//creates a list of NodeData for all nodes within a given radius.
 		GameObject[] allNodes;
 		allNodes = GameObject.FindGameObjectsWithTag("Node");
-		if (allNodes == null || allNodes[0] == null){
+		if (allNodes == null || allNodes.Length == 0 || allNodes[0] == null){
 			Debug.Log ("poop");
 			return null;
 		}

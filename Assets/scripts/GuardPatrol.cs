@@ -105,8 +105,8 @@ public class GuardPatrol : MonoBehaviour {
 //				Debug.Log("rotating");
 			} else if (state == "FindNode") {
 				targetNode = Utility.selectNode(gameObject, nodeDistance, stepsInRoom, lastNode);
+				state = "MoveToNode";
 				if(targetNode != null){
-					state = "MoveToNode";
 					stepsInRoom++;
 					walkTowards(targetNode.transform);
 				}
