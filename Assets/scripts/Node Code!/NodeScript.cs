@@ -6,6 +6,7 @@ public class NodeScript : MonoBehaviour {
 	//Super nodes are the one-per room nodes designed to navigate the guard
 	//from one room to the next.
 	public bool isSuper = false;
+	public bool canReset = false;
 	public bool isOff = false;
 
 	public GameObject next;

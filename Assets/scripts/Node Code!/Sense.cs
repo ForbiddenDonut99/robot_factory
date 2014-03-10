@@ -7,7 +7,10 @@ public class Sense : MonoBehaviour {
 		//creates a list of NodeData for all nodes within a given radius.
 		GameObject[] allNodes;
 		allNodes = GameObject.FindGameObjectsWithTag("Node");
-		if (allNodes[0] == null)Debug.Log ("poop");
+		if (allNodes == null || allNodes[0] == null){
+			Debug.Log ("poop");
+			return null;
+		}
 		int addIndex = 0;
 		int resultSize = 0;
 		GameObject[] tempList;
@@ -30,7 +33,7 @@ public class Sense : MonoBehaviour {
 		}
 		else return null;
 	}
-	public static GameObject[] superNodes (GameObject[] nodes){
+	public static GameObject[] exitNodes (GameObject[] nodes){
 		//Extracts eligible super node game objects from a node data list.
 		if(nodes == null)return null;
 		GameObject[] tempList;
@@ -39,6 +42,31 @@ public class Sense : MonoBehaviour {
 		tempList = new GameObject[nodes.Length];
 		foreach(GameObject node in nodes){
 			if (node.GetComponent<NodeScript>().isSuper){
+				tempList[addIndex] = node;
+				addIndex++;
+				resultSize++;
+			}
+		}
+		if(resultSize != 0){
+			GameObject[] resultList;
+			resultList = new GameObject[resultSize];
+			for(int i = 0; i<resultSize;i++){
+				resultList[i] = tempList[i];
+			}
+			return resultList;
+		}
+		else return null;
+	}
+
+	public static GameObject[] resetNodes (GameObject[] nodes){
+		//Extracts eligible super node game objects from a node data list.
+		if(nodes == null)return null;
+		GameObject[] tempList;
+		int resultSize = 0;
+		int addIndex = 0;
+		tempList = new GameObject[nodes.Length];
+		foreach(GameObject node in nodes){
+			if (node.GetComponent<NodeScript>().canReset){
 				tempList[addIndex] = node;
 				addIndex++;
 				resultSize++;
