@@ -8,6 +8,7 @@ public class RobotController: MonoBehaviour
 	// public variables
 
 	// powerups
+	public int powerUpCounter = 0;  // for endgame score
 
 	public float speed = 4.0f;
 	public float maxSpeed = 16.0f;
@@ -48,10 +49,16 @@ public class RobotController: MonoBehaviour
     private int jumpTimer;
  
     void Start()
-    {
+	{
+		// set up powerups
+		flashLight = transform.GetComponentInChildren<Light>();
+		flashLight.enabled = false;
+
 		playerCameraTransform = transform.Find("Main Camera").transform;
 		crosshairPosition = new Rect((Screen.width - crosshairTexture.width)/2,(Screen.height - crosshairTexture.height)/2, 
 		                             crosshairTexture.width, crosshairTexture.height);
+
+		// ammo counter 
 		GameObject ammoTextObj = new GameObject("ammoCounter");
 		ammoTextObj.transform.position = new Vector3(0.5f,0.5f,0f);
 		ammoText = (GUIText)ammoTextObj.AddComponent(typeof(GUIText));
@@ -60,9 +67,7 @@ public class RobotController: MonoBehaviour
 		ammoText.color = Color.green;
 		ammoText.text = "Ammo: " + stunGunAmmo;
 
-		flashLight = transform.GetComponentInChildren<Light>();
-		flashLight.enabled = false;
-
+		// the rest
         controller = GetComponent<CharacterController>();
         myTransform = transform;
         rayDistance = controller.height * .5f + controller.radius;
@@ -195,5 +200,6 @@ public class RobotController: MonoBehaviour
 			stunGunAmmo += ammo;
 			ammoText.text = "Ammo: " + stunGunAmmo;
 		}
+		powerUpCounter ++;
 	}
 }
