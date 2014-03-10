@@ -15,6 +15,7 @@ public class Utility : MonoBehaviour {
 	public static bool isInRange(GameObject self, GameObject target, float maxDistance){
 		/*Compares the distance between a given target and the calling
 	 * instance, returning true if this value is less than the max distance specified.*/
+		if (target == null)return true;
 		Vector3 position = self.transform.position;
 		Vector3 difference = target.transform.position-position;
 		float distance = difference.sqrMagnitude;
@@ -26,29 +27,57 @@ public class Utility : MonoBehaviour {
 		//chance of selecting a super node increases. Also, will try not to
 		//go to the last node visited.
 		bool selected = false;
+		int resetOptions;
 		int superOptions;
 		GameObject[] nodes;
 		nodes = Sense.nearbyNodes(self, distance);
 		if (nodes == null)return null;
-		GameObject[] supers;
-		supers = Sense.superNodes(nodes);
+		GameObject[] resets;
+		resets = Sense.resetNodes(nodes);
+		GameObject[] exits;
+		exits = Sense.exitNodes(nodes);
 		int options = nodes.Length;
-		if (supers != null){
-			superOptions = supers.Length;
+		if (resets != null){
+			resetOptions = exits.Length;
+		}
+		else resetOptions = 0;
+		if (exits != null){
+			superOptions = exits.Length;
 		}
 		else superOptions = 0;
 		float superWeight = counter/10; //10 is a magic number right now. This is the amount of steps to take within a room.
 		GameObject result = lastNode;
-		if(options == 1 && !lastNode.GetComponent<NodeScript>().isOff){
+
+		if(lastNode.GetComponent<NodeScript>().isSuper && superOptions == 1 && !lastNode.GetComponent<NodeScript>().isOff && Random.value < superWeight && exits != null){
+			Debug.Log("Returned to "+lastNode+" because we wanted to escape, but also dead end.");
+			return lastNode; //if we wanna get out, but there's only one option, use this.
+		}
+
+
+		else if(options == 1 && !lastNode.GetComponent<NodeScript>().isOff){
 			Debug.Log ("Returned to " + lastNode+ " because we hit a dead end.");
 			return lastNode; //if there's only one option, we're at a dead end, and we need to go back.
 		}
-		else if(Random.value < superWeight && supers != null){//try to find a super node instead
+
+		else if(Random.value < superWeight && resets != null){//try to find a reset node instead
+			while(!selected){
+				int choice = Random.Range (0,resetOptions);
+				if(resets[choice] != lastNode){ // Makes sure the returned node isn't where we just came from.
+					selected = true;			//Tries over and over until it comes up with one.
+					result = resets[choice];
+				}
+				else selected = false;
+			}
+			Debug.Log ("We chose " + result+ " because we wanted a SuperNode.");
+			return result;
+		}
+
+		else if(Random.value < superWeight && exits != null){//try to find an exit node instead
 			while(!selected){
 				int choice = Random.Range (0,superOptions);
-				if(supers[choice] != lastNode){ // Makes sure the returned node isn't where we just came from.
+				if(exits[choice] != lastNode){ // Makes sure the returned node isn't where we just came from.
 					selected = true;			//Tries over and over until it comes up with one.
-					result = supers[choice];
+					result = exits[choice];
 				}
 				else selected = false;
 			}

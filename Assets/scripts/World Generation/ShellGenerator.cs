@@ -7,7 +7,7 @@ public class ShellGenerator : MonoBehaviour {
 	public Transform RoomB;
 	public Transform RoomC;
 	private bool hasA, hasB, hasC, second, third;
-
+	public string output;
 	void Start () {
 
  		//Instantiate First Shell
@@ -16,14 +16,17 @@ public class ShellGenerator : MonoBehaviour {
 		if (pattern == 0){
 			Instantiate (RoomA,new Vector3(34,0,0),Quaternion.Euler(new Vector3(-90,-270,0)));
 			hasA = true;
+			output += "A";
 		}
 		else if (pattern == 1){
 			Instantiate (RoomB,new Vector3(34,0,0),Quaternion.Euler(new Vector3(-90,-270,0)));
 			hasB = true;
+			output += "B";
 		}
 		else{
 			Instantiate (RoomC,new Vector3(34,0,0),Quaternion.Euler(new Vector3(-90,-270,0)));
 			hasC = true;
+			output += "C";
 		}
 
 		//Instantiate Second Shell
@@ -34,16 +37,19 @@ public class ShellGenerator : MonoBehaviour {
 				Instantiate (RoomA,new Vector3(0,0,-34),Quaternion.Euler(new Vector3(-90,-180,0)));
 				hasA = true;
 				second = true;
+				output += "A";
 			}
 			else if (pattern == 1 && !hasB){
 				Instantiate (RoomB,new Vector3(0,0,-34),Quaternion.Euler(new Vector3(-90,-180,0)));
 				hasB = true;
 				second = true;
+				output += "B";
 			}
 			else if (pattern == 2 && !hasC){
 				Instantiate (RoomC,new Vector3(0,0,-34),Quaternion.Euler(new Vector3(-90,-180,0)));
 				hasC = true;
 				second = true;
+				output += "C";
 			}
 			else second = false;
 
@@ -57,20 +63,24 @@ public class ShellGenerator : MonoBehaviour {
 				Instantiate (RoomA,new Vector3(-34,0,0),Quaternion.Euler(new Vector3(-90,270,0)));
 				hasA = true;
 				third = true;
+				output += "A";
+
 			}
 			else if (pattern == 1 && !hasB){
 				Instantiate (RoomB,new Vector3(-34,0,0),Quaternion.Euler(new Vector3(-90,270,0)));
 				hasB = true;
 				third = true;
+				output += "B";
 			}
 			else if (pattern == 2 && !hasC){
 				Instantiate (RoomC,new Vector3(-34,0,0),Quaternion.Euler(new Vector3(-90,270,0)));
 				hasC = true;
 				third = true;
+				output += "C";
 			}
 			else third = false;
 		}
-		Debug.Log ("All Rooms Spawned.");
+		Debug.Log ("All Rooms Spawned with pattern "+output);
 
 	
 

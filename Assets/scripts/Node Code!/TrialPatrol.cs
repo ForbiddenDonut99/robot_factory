@@ -7,7 +7,7 @@ public class TrialPatrol : MonoBehaviour {
 	public GameObject lastNode;
 	public GameObject targetNode;
 	public int stepsInRoom = 0;
-	public float nodeDistance = 150f;
+	public float nodeDistance = 20f;
 	public float baseSpeed = 1f;
 	float moveSpeed;
 	CharacterController guardController;
@@ -22,7 +22,7 @@ public class TrialPatrol : MonoBehaviour {
 	void Update () {
 
 		if(targetNode != null && lastNode != null){
-			if(targetNode.GetComponent<NodeScript>().isSuper && lastNode.GetComponent<NodeScript>().isSuper){
+			if(targetNode.GetComponent<NodeScript>().canReset && lastNode.GetComponent<NodeScript>().canReset){
 				stepsInRoom = 0;
 			}
 		}
@@ -45,7 +45,7 @@ public class TrialPatrol : MonoBehaviour {
 			break;
 
 		case ("ChasePlayer"):
-			//TODO: Chase the player, switch to "FindNode" if canSeePlayer.
+			//TODO: Chase the player, switch to "FindNode" if canSeePlayer is false.
 			break;
 		
 		}
