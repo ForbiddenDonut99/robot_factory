@@ -47,10 +47,31 @@ public class Utility : MonoBehaviour {
 		else superOptions = 0;
 		float superWeight = counter/10; //10 is a magic number right now. This is the amount of steps to take within a room.
 		GameObject result = lastNode;
-		if(options == 1 && !lastNode.GetComponent<NodeScript>().isOff){
+
+		if(lastNode.GetComponent<NodeScript>().isSuper && superOptions == 1 && !lastNode.GetComponent<NodeScript>().isOff && Random.value < superWeight && exits != null){
+			Debug.Log("Returned to "+lastNode+" because we wanted to escape, but also dead end.");
+			return lastNode; //if we wanna get out, but there's only one option, use this.
+		}
+
+
+		else if(options == 1 && !lastNode.GetComponent<NodeScript>().isOff){
 			Debug.Log ("Returned to " + lastNode+ " because we hit a dead end.");
 			return lastNode; //if there's only one option, we're at a dead end, and we need to go back.
 		}
+
+		else if(Random.value < superWeight && resets != null){//try to find a reset node instead
+			while(!selected){
+				int choice = Random.Range (0,superOptions);
+				if(resets[choice] != lastNode){ // Makes sure the returned node isn't where we just came from.
+					selected = true;			//Tries over and over until it comes up with one.
+					result = resets[choice];
+				}
+				else selected = false;
+			}
+			Debug.Log ("We chose " + result+ " because we wanted a SuperNode.");
+			return result;
+		}
+
 		else if(Random.value < superWeight && exits != null){//try to find an exit node instead
 			while(!selected){
 				int choice = Random.Range (0,superOptions);
