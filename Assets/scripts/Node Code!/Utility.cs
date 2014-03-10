@@ -61,7 +61,7 @@ public class Utility : MonoBehaviour {
 
 		else if(Random.value < superWeight && resets != null){//try to find a reset node instead
 			while(!selected){
-				int choice = Random.Range (0,superOptions);
+				int choice = Random.Range (0,resetOptions);
 				if(resets[choice] != lastNode){ // Makes sure the returned node isn't where we just came from.
 					selected = true;			//Tries over and over until it comes up with one.
 					result = resets[choice];

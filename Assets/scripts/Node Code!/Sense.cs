@@ -16,11 +16,13 @@ public class Sense : MonoBehaviour {
 		GameObject[] tempList;
 		tempList = new GameObject[allNodes.Length];
 		foreach (GameObject node in allNodes){
-			if(Utility.isInRange(self, node, distance)&& !node.GetComponent<NodeScript>().isOff){
-				//only adds nodes you aren't standing on, and that are within range
-				resultSize ++;
-				tempList[addIndex] = node;
-				addIndex ++;
+			if(node != null && self != null && node.GetComponent<NodeScript>() != null){
+				if(Utility.isInRange(self, node, distance)&& !node.GetComponent<NodeScript>().isOff){
+					//only adds nodes you aren't standing on, and that are within range
+					resultSize ++;
+					tempList[addIndex] = node;
+					addIndex ++;
+				}
 			}
 		}
 		if (resultSize != 0){
