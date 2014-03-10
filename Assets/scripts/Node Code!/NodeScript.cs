@@ -19,21 +19,21 @@ public class NodeScript : MonoBehaviour {
 	void OnTriggerEnter (Collider other){
 		//if the guard passes through, makes node ineligible for selection.
 		//Also tells the guard this was the last node selected.
-		if(other.GetComponent<TrialPatrol>() != null && !isOff){
+		if(other.GetComponent<GuardPatrol>() != null && !isOff){
 			isOff = true;
 			//Debug.Log (gameObject + "is off!");
-			if(other.GetComponent<TrialPatrol>().targetNode == gameObject){
-				other.GetComponent<TrialPatrol>().state = "FindNode";
-				//other.GetComponent<TrialPatrol>().targetNode = next;
+			if(other.GetComponent<GuardPatrol>().targetNode == gameObject){
+				other.GetComponent<GuardPatrol>().state = "FindNode";
+				//other.GetComponent<GuardPatrol>().targetNode = next;
 			}
 		}
 	}
 	void OnTriggerExit (Collider other){
 		//makes node eligible again once guard leaves it.
-		if(other.GetComponent<TrialPatrol>() != null && isOff){
+		if(other.GetComponent<GuardPatrol>() != null && isOff){
 			isOff = false;
 			//Debug.Log(gameObject + "is on!");
-			other.GetComponent<TrialPatrol>().lastNode = gameObject;
+			other.GetComponent<GuardPatrol>().lastNode = gameObject;
 		}
 	}
 
