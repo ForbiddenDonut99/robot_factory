@@ -12,13 +12,13 @@ public class GuardPatrol : MonoBehaviour {
 	public int stepsInRoom = 0;
 	public GameObject lastNode;
 
-
 	// local
 	CharacterController guardController;
 
 	// movement vars
 	float moveSpeed;
 	Vector3 nextDirection = Vector3.zero;
+	float stunTime;
 
 	// game over vars
 	bool isGameOver = false;
@@ -42,14 +42,26 @@ public class GuardPatrol : MonoBehaviour {
 	void Start () {
 		guardController = GetComponent<CharacterController>();
 		moveSpeed = baseSpeed;
+
+		player = GameObject.FindGameObjectWithTag("Player");
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		if (isGameOver){
 			return;
+		}else if(stunTime > 0.0f){
+			// handle stun
+			stunTime -= Time.deltaTime;
+			if(stunTime <= 0.0f){
+				//TODO: recover from stun animation
+				transform.rotation = Quaternion.LookRotation(nextDirection);
+				transform.position = new Vector3(transform.position.x, transform.position.y + 0.5f, transform.position.z);
+			}
+			return;
 		}else if(Vector3.Distance(transform.position, player.transform.position) < 1.2f){
 			Debug.Log("PLAYER CAUGHT");
+			player.GetComponent<RobotController>().speed = 0.0f;
 			isGameOver = true;
 			return;
 		} 
@@ -153,6 +165,17 @@ public class GuardPatrol : MonoBehaviour {
 			nextDirection = directionList[rndnum];
 		}
 	}
+
+	// use for stunning
+	public void stun(float time){
+		if(stunTime <= 0.0f){
+			//TODO: stun animation
+			nextDirection = transform.forward;
+			transform.rotation = Quaternion.LookRotation(-transform.up);
+			transform.position = new Vector3(transform.position.x, transform.position.y - 0.5f, transform.position.z);
+		}
+		stunTime = time;
+	}
 	
 	// use these 2 functions to make the guard go a certain direction.
 	public void walkTowards(Transform targetTransform){
@@ -162,18 +185,3 @@ public class GuardPatrol : MonoBehaviour {
 		nextDirection = direction;
 	}
 }
-
-/* Hey, Zhan! as of right now, there's only a few thing left to implement the node system. You can use
- * Utility.selectNode (gameobject, *distance to detect nodes within (a float)*, stepsInRoom, lastNode)
- * to get a GameObject (a random eligible node within specified distance). If you increment stepsInRoom by one
- * each time you select/move to one, it'll even move you in and out of rooms appropriately.
- * I still haven't implemented a reset for that, because I'll have to do that in this code, and I don't wanna fuck around
- * with it too much. The pseudo-code implementation will be:
- * 
- * if((Utility.SelectNode).GetComponent<NodeScript>().isSuper && lastNode.GetComponent<NodeScript>().isSuper){
- * 		stepsInRoom = 0;
- * 	}
-
-Because the node selection code depends on nodes being the last node and on/off, I can't test this yet. I managed
-to test it up to the part where it accurately senses all eligible nodes, but I haven't tested selection. If you can get the guard
-walking to/through nodes, I can finish this up. */

@@ -7,9 +7,20 @@ public class RobotController: MonoBehaviour
 
 	// public variables
 
-    public float walkSpeed = 6.0f;
-    public float runSpeed = 10.0f;
-    public bool enableRunning = false;
+	// powerups
+
+	public float speed = 4.0f;
+	public float maxSpeed = 16.0f;
+	public float lightBattery = 0.0f;
+	public float maxBattery = 10.0f;
+	public int stunGunAmmo = 0;
+	public Light flashLight;
+	public Texture2D crosshairTexture;
+	Rect crosshairPosition;
+	Transform playerCameraTransform;
+
+	// others
+
     public float jumpSpeed = 4.0f;
     public float gravity = 10.0f; 
     public bool slideWhenOverSlopeLimit = false;
@@ -26,7 +37,6 @@ public class RobotController: MonoBehaviour
     private bool grounded = false;
     private CharacterController controller;
     private Transform myTransform;
-    private float speed;
     private RaycastHit hit;
     private bool falling;
     private float slideLimit;
@@ -37,9 +47,15 @@ public class RobotController: MonoBehaviour
  
     void Start()
     {
+		playerCameraTransform = transform.Find("Main Camera").transform;
+		crosshairPosition = new Rect((Screen.width - crosshairTexture.width)/2,(Screen.height - crosshairTexture.height)/2, 
+		                             crosshairTexture.width, crosshairTexture.height);
+
+		flashLight = transform.GetComponentInChildren<Light>();
+		flashLight.enabled = false;
+
         controller = GetComponent<CharacterController>();
         myTransform = transform;
-        speed = walkSpeed;
         rayDistance = controller.height * .5f + controller.radius;
         slideLimit = controller.slopeLimit - .1f;
         jumpTimer = antiBunnyHopFactor;
@@ -63,11 +79,6 @@ public class RobotController: MonoBehaviour
                 if (Vector3.Angle(hit.normal, Vector3.up) > slideLimit)
                     sliding = true;
 			}
- 
-            if( enableRunning )
-            {
-            	speed = Input.GetButton("Run")? runSpeed : walkSpeed;
-            }
  
             
             if ( (sliding && slideWhenOverSlopeLimit) || (slideOnTaggedObjects && hit.collider.tag == "Slide") ) {
@@ -97,7 +108,6 @@ public class RobotController: MonoBehaviour
             if (!falling) {
                 falling = true;
             }
- 
            
             if (airControl && playerControl) {
                 moveDirection.x = inputX * speed * inputModifyFactor;
@@ -112,9 +122,65 @@ public class RobotController: MonoBehaviour
         // is grounded check
         grounded = (controller.Move(moveDirection * Time.deltaTime) & CollisionFlags.Below) != 0;
     }
+
+	void Update(){
+		// flashlight switch
+		if (Input.GetKeyDown(KeyCode.F)){
+			if(flashLight.enabled == false){
+				if(lightBattery > 0.0f){
+					flashLight.enabled = true;
+				}
+			} else{
+				flashLight.enabled = false;
+			}
+		}
+		// stun gun fire
+		if(Input.GetMouseButtonDown(0)){
+			if(stunGunAmmo > 0){
+				Ray mouseRay = new Ray(playerCameraTransform.position, playerCameraTransform.forward);
+				RaycastHit rayHit = new RaycastHit();
+				if(Physics.Raycast(mouseRay, out rayHit, 100f)){
+					if (rayHit.transform.GetComponent<GuardPatrol>() != null){
+						rayHit.transform.GetComponent<GuardPatrol>().stun(5.0f);
+					}
+				}
+				stunGunAmmo --;
+			}
+		}
+	}
  
     // storing is grounded check
     void OnControllerColliderHit (ControllerColliderHit hit) {
         contactPoint = hit.point;
     }
+	
+	void OnGUI(){
+		// draw crosshair if there's ammo left
+		if(stunGunAmmo > 0){
+			GUI.DrawTexture(crosshairPosition, crosshairTexture);
+		}
+//		GUI.Box(new Rect(10, 10, Screen.width/2, 20), lightBattery + "/" + maxBattery);
+	}
+	
+	public void PowerUp(int PowerUpType, float PowerUpValue){
+		if (PowerUpType == 0){
+			// wheels
+			if (speed + PowerUpValue > maxSpeed){
+				speed = maxSpeed;
+			} else{
+				speed += PowerUpValue;
+			}
+		} else if (PowerUpType == 1){
+			// flashlight
+			if (lightBattery + PowerUpValue > maxBattery){
+				lightBattery = maxBattery;
+			} else{
+				lightBattery += PowerUpValue;
+			}
+		} else if (PowerUpType == 2){
+			// stun gun
+			int ammo = (int)PowerUpValue;
+			stunGunAmmo += ammo;
+		}
+	}
 }
