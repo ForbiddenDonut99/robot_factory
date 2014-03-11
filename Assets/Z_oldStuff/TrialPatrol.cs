@@ -10,7 +10,7 @@ public class TrialPatrol : MonoBehaviour {
 	public int stepsInRoom = 0;
 	public float nodeDistance = 20f;
 	public float baseSpeed = 1f;
-	public float rotation = 1.0f;
+	public float rotation = 2.0f;
 	float moveSpeed;
 	CharacterController guardController;
 	// Use this for initialization
@@ -48,9 +48,15 @@ public class TrialPatrol : MonoBehaviour {
 			}
 			return;
 		}
+		//else transform.rotation = Quaternion.Euler();
 
 		//Check for player detection.
-		if(Sense.player(gameObject, player))state = "ChasePlayer";
+		if(Sense.player(gameObject, player)){
+			state = "ChasePlayer";
+			Debug.Log ("Hunting Player!");
+			rotation = 8.0f;
+		}
+		else rotation = 2.0f;
 
 		//Reset the StepsInRoom counter if you go from reset node to reset node.
 		if(targetNode != null && lastNode != null){
@@ -79,7 +85,10 @@ public class TrialPatrol : MonoBehaviour {
 			break;
 
 		case ("ChasePlayer"):
-			if (!Sense.player(gameObject, player))state = "FindNode";
+			if (!Sense.player(gameObject, player)){
+				state = "FindNode";
+				Debug.Log ("Lost sight of Player.");
+			}
 			else{
 				guardController.Move (Vector3.Normalize(player.transform.position - transform.position)*Time.deltaTime*moveSpeed*1.5f);
 				Vector3 finalFacing = (player.GetComponent<Transform>().position - transform.position).normalized;
