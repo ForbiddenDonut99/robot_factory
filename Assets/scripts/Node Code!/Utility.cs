@@ -27,7 +27,6 @@ public class Utility : MonoBehaviour {
 		//chance of selecting a super node increases. Also, will try not to
 		//go to the last node visited.
 		bool selected = false;
-		int resetOptions;
 		int superOptions;
 		GameObject[] nodes;
 		nodes = Sense.nearbyNodes(self, distance);
@@ -37,15 +36,11 @@ public class Utility : MonoBehaviour {
 		GameObject[] exits;
 		exits = Sense.exitNodes(nodes);
 		int options = nodes.Length;
-		if (resets != null){
-			resetOptions = exits.Length;
-		}
-		else resetOptions = 0;
 		if (exits != null){
 			superOptions = exits.Length;
 		}
 		else superOptions = 0;
-		float superWeight = counter/10; //10 is a magic number right now. This is the amount of steps to take within a room.
+		float superWeight = counter/15; //10 is a magic number right now. This is the amount of steps to take within a room.
 		GameObject result = lastNode;
 
 		if(lastNode.GetComponent<NodeScript>().isSuper && superOptions == 1 && !lastNode.GetComponent<NodeScript>().isOff && Random.value < superWeight && exits != null){
