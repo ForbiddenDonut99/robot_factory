@@ -88,11 +88,21 @@ public class Sense : MonoBehaviour {
 	public static bool player (GameObject self, GameObject player){
 		bool result = false;
 		RaycastHit hit = new RaycastHit();
-		if(Physics.Raycast(self.transform.position, player.transform.position - self.transform.position, out hit, 20f) &&
-		   Vector3.Angle (player.transform.position - self.transform.position, self.transform.forward) < 60f){
-			if (hit.transform.tag == "Player"){
+		CharacterController controller = player.GetComponent<CharacterController>();
+		float detectSpeed = (controller.velocity.x)+(controller.velocity.y)+(controller.velocity.z);
+		//Debug.Log (detectSpeed);
+
+		//Basic, line of sight from far away.
+		if(Physics.Raycast(self.transform.position, player.transform.position - self.transform.position, out hit, 20f)){ 
+		   if(Vector3.Angle (player.transform.position - self.transform.position, self.transform.forward) < 30f){
+				if (hit.transform.tag == "Player"){
 				result = true;
+				}
 			}
+		}
+		//Based on being close and moving.
+		if(Physics.Raycast(self.transform.position, player.transform.position - self.transform.position, out hit, 7.5f)){
+			if (hit.transform.tag == "Player" && detectSpeed >= 0.25f) result = true;
 		}
 		return result;
 	}
