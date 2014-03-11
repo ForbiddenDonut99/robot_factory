@@ -16,11 +16,12 @@ public class RobotController: MonoBehaviour
 	public float maxBattery = 10.0f;
 	public int stunGunAmmo = 0;
 	public Light flashLight;
-	public Texture2D crosshairTexture;
-	Rect crosshairPosition;
-	Transform playerCameraTransform;
 
+	// stungun stuff
+	Texture2D crosshairTexture;
+	Rect crosshairPosition;
 	GUIText ammoText;
+	Transform playerCameraTransform;
 
 	// others
 
@@ -54,9 +55,12 @@ public class RobotController: MonoBehaviour
 		flashLight = transform.GetComponentInChildren<Light>();
 		flashLight.enabled = false;
 
-		playerCameraTransform = transform.Find("Main Camera").transform;
+		// load crosshair texture from resources and set position
+		crosshairTexture = (Texture2D)Resources.Load("crosshair");
 		crosshairPosition = new Rect((Screen.width - crosshairTexture.width)/2,(Screen.height - crosshairTexture.height)/2, 
 		                             crosshairTexture.width, crosshairTexture.height);
+		playerCameraTransform = transform.Find("Main Camera").transform;
+
 
 		// ammo counter 
 		GameObject ammoTextObj = new GameObject("ammoCounter");

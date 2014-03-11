@@ -6,7 +6,6 @@ public class GuardPatrol : MonoBehaviour {
 	public GameObject player;
 	public float baseSpeed = 1f;
 	public float wallBuffer = 2f;
-	public Texture2D fadeTexture;
 
 	// node related
 	public int stepsInRoom = 0;
@@ -24,6 +23,7 @@ public class GuardPatrol : MonoBehaviour {
 	float stunTime;
 
 	// game over vars
+	Texture2D fadeTexture;
 	bool isGameOver = false;
 	float alpha = 0;
 	float restartCountDown = 5.0f;
@@ -72,6 +72,9 @@ public class GuardPatrol : MonoBehaviour {
 		endTextStyle.normal.textColor = Color.white;
 		endTextStyle.fontSize = 24;
 		endTextStyle.alignment = TextAnchor.MiddleCenter;
+
+		// load fadeout texture
+		fadeTexture = (Texture2D)Resources.Load("black");
 	}
 	
 	// Update is called once per frame
