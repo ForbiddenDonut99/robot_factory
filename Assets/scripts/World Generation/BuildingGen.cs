@@ -248,9 +248,12 @@ public class BuildingGen : MonoBehaviour {
 		// create the nodes connecting to the next room
 		for(int n = 0; n < 4; n++){
 			Instantiate(node, new Vector3(roomCenter.x + (20+n*4f) * xMultiplier,(0.5f),roomCenter.z + (20+n*4f) * zMultiplier), Quaternion.identity);
+			Debug.Log ("MADE AOT node");
 		}
 		GameObject resetnode;
 		resetnode = (GameObject)Instantiate(node, new Vector3(roomCenter.x + (16f) * xMultiplier,0.5f,roomCenter.z + (16f) * zMultiplier), Quaternion.identity);
 		resetnode.GetComponent<NodeScript>().canReset = true;
+		resetnode.GetComponent<NodeScript>().isSuper = false;
+		Debug.Log ("more more more!");
 	}
 }
