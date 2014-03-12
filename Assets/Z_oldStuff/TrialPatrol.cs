@@ -31,7 +31,7 @@ public class TrialPatrol : MonoBehaviour {
 	void Update () {
 
 		//Check for game over.
-		if(Vector3.Distance(transform.position, player.transform.position) < 1.2f){
+		if(Vector3.Distance(transform.position, player.transform.position) < 1.2f && !(stunTime > 0.0f)){
 			Debug.Log("PLAYER CAUGHT");
 			player.GetComponent<RobotController>().speed = 0.0f;
 			player.GetComponent<RobotController>().stunGunAmmo = 0;
