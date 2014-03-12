@@ -120,12 +120,7 @@ public class BuildingGen : MonoBehaviour {
 						}
 					} else{
 						// create the nodes connecting to the next room
-						for(int n = 0; n < 4; n++){
-							Instantiate(node, new Vector3(i*roomWidth - 20 - n * 4f,(0.5f),j*roomWidth), Quaternion.identity);
-						}
-						GameObject resetnode;
-						resetnode = (GameObject)Instantiate(node, new Vector3(i*roomWidth - 16f,0.5f,j*roomWidth), Quaternion.identity);
-						resetnode.GetComponent<NodeScript>().canReset = true;
+						GenerateConnectingNodes(new Vector3(i*roomWidth,0f,j*roomWidth), -1, 0);
 					}
 
 					if(roomType != 2 && roomType != 3){
@@ -137,12 +132,7 @@ public class BuildingGen : MonoBehaviour {
 						}
 					} else{
 						// create the nodes connecting to the next room
-						for(int n = 0; n < 4; n++){
-							Instantiate(node, new Vector3(i*roomWidth + 20 + n * 4f,(0.5f),j*roomWidth), Quaternion.identity);
-						}
-						GameObject resetnode;
-						resetnode = (GameObject)Instantiate(node, new Vector3(i*roomWidth + 16f,0.5f,j*roomWidth), Quaternion.identity);
-						resetnode.GetComponent<NodeScript>().canReset = true;
+						GenerateConnectingNodes(new Vector3(i*roomWidth,0f,j*roomWidth), 1, 0);
 					}
 
 					if(j == 0 || roomTypeArray[i,j-1] == 0){
@@ -154,12 +144,7 @@ public class BuildingGen : MonoBehaviour {
 						}
 					} else{
 						// create the nodes connecting to the next room
-						for(int n = 0; n < 4; n++){
-							Instantiate(node, new Vector3(i*roomWidth,(0.5f),j*roomWidth - 20 - n * 4f), Quaternion.identity);
-						}
-						GameObject resetnode;
-						resetnode = (GameObject)Instantiate(node, new Vector3(i*roomWidth,0.5f,j*roomWidth - 16f), Quaternion.identity);
-						resetnode.GetComponent<NodeScript>().canReset = true;
+						GenerateConnectingNodes(new Vector3(i*roomWidth,0f,j*roomWidth), 0, -1);
 					}
 
 					if(j == 3 || roomTypeArray[i,j+1] == 0){
@@ -171,12 +156,7 @@ public class BuildingGen : MonoBehaviour {
 						}
 					} else{
 						// create the nodes connecting to the next room
-						for(int n = 0; n < 4; n++){
-							Instantiate(node, new Vector3(i*roomWidth,(0.5f),j*roomWidth + 20 + n * 4f), Quaternion.identity);
-						}
-						GameObject resetnode;
-						resetnode = (GameObject)Instantiate(node, new Vector3(i*roomWidth,0.5f,j*roomWidth + 16f), Quaternion.identity);
-						resetnode.GetComponent<NodeScript>().canReset = true;
+						GenerateConnectingNodes(new Vector3(i*roomWidth,0f,j*roomWidth), 0, 1);
 					}
 
 
@@ -263,9 +243,14 @@ public class BuildingGen : MonoBehaviour {
 			}
 		}
 	}
-	//	
-	//	// Update is called once per frame
-	//	void Update () {
-//	
-//	}
+
+	void GenerateConnectingNodes(Vector3 roomCenter, int xMultiplier, int zMultiplier){
+		// create the nodes connecting to the next room
+		for(int n = 0; n < 4; n++){
+			Instantiate(node, new Vector3(roomCenter.x + (20+n*4f) * xMultiplier,(0.5f),roomCenter.z + (20+n*4f) * zMultiplier), Quaternion.identity);
+		}
+		GameObject resetnode;
+		resetnode = (GameObject)Instantiate(node, new Vector3(roomCenter.x + (16f) * xMultiplier,0.5f,roomCenter.z + (16f) * zMultiplier), Quaternion.identity);
+		resetnode.GetComponent<NodeScript>().canReset = true;
+	}
 }
