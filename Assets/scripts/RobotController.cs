@@ -15,8 +15,8 @@ public class RobotController: MonoBehaviour
 	public float lightBattery = 0.0f;
 	public float maxBattery = 10.0f;
 	public int stunGunAmmo = 0;
-	public Light flashLight;
-
+	
+	Light flashLight;
 	// stungun stuff
 	Texture2D crosshairTexture;
 	Rect crosshairPosition;
