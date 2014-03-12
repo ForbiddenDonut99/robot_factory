@@ -82,6 +82,7 @@ public class Escape : MonoBehaviour {
 			player = other.transform;
 			RobotController playerControl = player.GetComponent<RobotController>();
 			playerControl.speed = 0.5f;
+			playerControl.stunGunAmmo = 0;
 			win = true;
 		}
 	}
