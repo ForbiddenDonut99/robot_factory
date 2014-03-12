@@ -155,7 +155,7 @@ public class BuildingGen : MonoBehaviour {
 						// generate guards not on the first level and not next to starting room
 						if(roomType == 1 && i != 0 && roomTypeArray[i-1,j] != -1 && roomTypeArray[i-1,j] != 3){
 							if (Random.Range(0f,100f) <= guardChance){
-								Instantiate(guard, new Vector3(i*roomWidth,3f,j*roomWidth), Quaternion.identity);
+								//Instantiate(guard, new Vector3(i*roomWidth,3f,j*roomWidth), Quaternion.identity);
 							}
 						}
 						if(roomType == 1 || roomType == 2){

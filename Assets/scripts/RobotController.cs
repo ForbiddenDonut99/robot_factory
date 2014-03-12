@@ -17,6 +17,8 @@ public class RobotController: MonoBehaviour
 	public int stunGunAmmo = 0;
 	
 	Light flashLight;
+	GUIText powerupText;
+	float powerupFadeAlpha = 0f;
 	// stungun stuff
 	Texture2D crosshairTexture;
 	Rect crosshairPosition;
@@ -68,8 +70,22 @@ public class RobotController: MonoBehaviour
 		ammoText = (GUIText)ammoTextObj.AddComponent(typeof(GUIText));
 		ammoText.pixelOffset = new Vector2(-440, -260);
 		ammoText.fontSize = 18;
-		ammoText.color = Color.green;
+		ammoText.color = Color.magenta;
 		ammoText.text = "Ammo: " + stunGunAmmo;
+
+		// powerup alert 
+		GameObject powerupObj = new GameObject("powerupText");
+		powerupObj.transform.position = new Vector3(0.5f,0.5f,0f);
+		powerupText = (GUIText)powerupObj.AddComponent(typeof(GUIText));
+		powerupText.pixelOffset = new Vector2(440, 260);
+		powerupText.fontSize = 24;
+		powerupText.fontStyle = FontStyle.Bold;
+		powerupText.anchor = TextAnchor.LowerRight;
+		Color color = Color.green;
+		color.a = powerupFadeAlpha;
+		powerupText.color = color;
+		powerupText.text = "";
+
 
 		// the rest
         controller = GetComponent<CharacterController>();
@@ -166,6 +182,14 @@ public class RobotController: MonoBehaviour
 				ammoText.text = "Ammo: " + stunGunAmmo;
 			}
 		}
+
+		//powerup pickup alert fade
+		if(powerupFadeAlpha > 0f){
+			powerupFadeAlpha -= Time.deltaTime * 0.5f;
+			Color color = Color.green;
+			color.a = Mathf.Clamp01(powerupFadeAlpha);
+			powerupText.color = color;
+		}
 	}
  
     // storing is grounded check
@@ -186,6 +210,8 @@ public class RobotController: MonoBehaviour
 	public void PowerUp(int PowerUpType, float PowerUpValue){
 		if (PowerUpType == 0){
 			// wheels
+			powerupText.text = "Wheels! Speed Up!";
+			powerupFadeAlpha = 2f;
 			if (speed + PowerUpValue > maxSpeed){
 				speed = maxSpeed;
 			} else{
@@ -193,6 +219,8 @@ public class RobotController: MonoBehaviour
 			}
 		} else if (PowerUpType == 1){
 			// flashlight
+			powerupText.text = "Flashlight! Press [F] to use.";
+			powerupFadeAlpha = 2f;
 			if (lightBattery + PowerUpValue > maxBattery){
 				lightBattery = maxBattery;
 			} else{
@@ -200,6 +228,8 @@ public class RobotController: MonoBehaviour
 			}
 		} else if (PowerUpType == 2){
 			// stun gun
+			powerupText.text = "Stun Gun! Ammo Up!";
+			powerupFadeAlpha = 2f;
 			int ammo = (int)PowerUpValue;
 			stunGunAmmo += ammo;
 			ammoText.text = "Ammo: " + stunGunAmmo;
