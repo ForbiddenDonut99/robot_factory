@@ -19,6 +19,8 @@ public class BuildingGen : MonoBehaviour {
 	GameObject powerupCube;
 	GameObject guard;
 
+	bool flashLightGenerated = false;
+
 	// starting room
 	GameObject player;
 	GameObject conveyorBelt;
@@ -28,7 +30,7 @@ public class BuildingGen : MonoBehaviour {
 
 	float roomWidth = 68f; // size of the rooms
 	public float powerupChance = 25f;
-	public float guardChance = 40f;
+	public float guardChance = 80f;
 
 	// within the room
 	GameObject cubiclePreFab;
@@ -110,13 +112,22 @@ public class BuildingGen : MonoBehaviour {
 					// 2 connecting type 1 rooms are also walled off so there's no straight way to the end
 					if(i == 0 || (roomTypeArray[i-1,j] != 2 && roomTypeArray[i-1,j] != 3)){
 						// 1 in 6 chance of generating a powerup
-						if (Random.Range(0f,100f) <= powerupChance){
+						if (Random.Range(0f,100f) <= powerupChance && roomType != -1 && roomType != 3){
 							Instantiate(endBlocker, new Vector3(-32.5f+i*roomWidth,4f,0f+j*roomWidth), Quaternion.identity);
 							GeneratePowerUp(new Vector3(-30f+i*roomWidth,0.5f,0f+j*roomWidth));
 						} else{
 							Instantiate(doorBlocker, new Vector3(-15f+i*roomWidth,5f,0f+j*roomWidth), Quaternion.identity);
 						}
+					} else{
+						// create the nodes connecting to the next room
+						for(int n = 0; n < 4; n++){
+							Instantiate(node, new Vector3(i*roomWidth - 20 - n * 4f,(0.5f),j*roomWidth), Quaternion.identity);
+						}
+						GameObject resetnode;
+						resetnode = (GameObject)Instantiate(node, new Vector3(i*roomWidth - 16f,0.5f,j*roomWidth), Quaternion.identity);
+						resetnode.GetComponent<NodeScript>().canReset = true;
 					}
+
 					if(roomType != 2 && roomType != 3){
 						if (Random.Range(0f,100f) <= powerupChance){
 							Instantiate(endBlocker, new Vector3(32.5f+i*roomWidth,4f,0f+j*roomWidth), Quaternion.identity);
@@ -124,7 +135,16 @@ public class BuildingGen : MonoBehaviour {
 						} else{
 							Instantiate(doorBlocker, new Vector3(15f+i*roomWidth,5f,0f+j*roomWidth), Quaternion.identity);
 						}
+					} else{
+						// create the nodes connecting to the next room
+						for(int n = 0; n < 4; n++){
+							Instantiate(node, new Vector3(i*roomWidth + 20 + n * 4f,(0.5f),j*roomWidth), Quaternion.identity);
+						}
+						GameObject resetnode;
+						resetnode = (GameObject)Instantiate(node, new Vector3(i*roomWidth + 16f,0.5f,j*roomWidth), Quaternion.identity);
+						resetnode.GetComponent<NodeScript>().canReset = true;
 					}
+
 					if(j == 0 || roomTypeArray[i,j-1] == 0){
 						if (Random.Range(0f,100f) <= powerupChance){
 							Instantiate(endBlocker, new Vector3(0f+i*roomWidth,4f,-32.5f+j*roomWidth), Quaternion.Euler(new Vector3(0f,90f,0f)));
@@ -132,7 +152,16 @@ public class BuildingGen : MonoBehaviour {
 						} else{
 							Instantiate(doorBlocker, new Vector3(0f+i*roomWidth,5f,-15f+j*roomWidth), Quaternion.Euler(new Vector3(0f,90f,0f)));
 						}
+					} else{
+						// create the nodes connecting to the next room
+						for(int n = 0; n < 4; n++){
+							Instantiate(node, new Vector3(i*roomWidth,(0.5f),j*roomWidth - 20 - n * 4f), Quaternion.identity);
+						}
+						GameObject resetnode;
+						resetnode = (GameObject)Instantiate(node, new Vector3(i*roomWidth,0.5f,j*roomWidth - 16f), Quaternion.identity);
+						resetnode.GetComponent<NodeScript>().canReset = true;
 					}
+
 					if(j == 3 || roomTypeArray[i,j+1] == 0){
 						if (Random.Range(0f,100f) <= powerupChance){
 							Instantiate(endBlocker, new Vector3(0f+i*roomWidth,4f,32.5f+j*roomWidth), Quaternion.Euler(new Vector3(0f,90f,0f)));
@@ -140,7 +169,17 @@ public class BuildingGen : MonoBehaviour {
 						} else{
 							Instantiate(doorBlocker, new Vector3(0f+i*roomWidth,5f,15f+j*roomWidth), Quaternion.Euler(new Vector3(0f,90f,0f)));
 						}
+					} else{
+						// create the nodes connecting to the next room
+						for(int n = 0; n < 4; n++){
+							Instantiate(node, new Vector3(i*roomWidth,(0.5f),j*roomWidth + 20 + n * 4f), Quaternion.identity);
+						}
+						GameObject resetnode;
+						resetnode = (GameObject)Instantiate(node, new Vector3(i*roomWidth,0.5f,j*roomWidth + 16f), Quaternion.identity);
+						resetnode.GetComponent<NodeScript>().canReset = true;
 					}
+
+
 
 					if (roomType == -1 || roomType == 3){
 						// generate player
@@ -150,10 +189,8 @@ public class BuildingGen : MonoBehaviour {
 						// generate escape pad
 						Instantiate(escapePad, new Vector3(0f+i*roomWidth,0.2f,0f+j*roomWidth), Quaternion.identity);
 					} else {
-						// generate room stuff/nodes/
-
 						// generate guards not on the first level and not next to starting room
-						if(roomType == 1 && i != 0 && roomTypeArray[i-1,j] != -1 && roomTypeArray[i-1,j] != 3){
+						if((roomType == 1 || roomType == 2) && i != 0 && roomTypeArray[i-1,j] != -1 && roomTypeArray[i-1,j] != 3){
 							if (Random.Range(0f,100f) <= guardChance){
 								Instantiate(guard, new Vector3(i*roomWidth,3f,j*roomWidth), Quaternion.identity);
 							}
@@ -170,18 +207,23 @@ public class BuildingGen : MonoBehaviour {
 		GameObject powerup = (GameObject)Instantiate(powerupCube, position, Quaternion.identity);
 		PowerUp up = powerup.GetComponent<PowerUp>();
 		float rnd = Random.Range(0f,100f);
-		if (rnd < 40){
+		if (rnd < 50){
 			up.PowerUpType = 0;
 		} else if (rnd < 60){
 			up.PowerUpType = 1;
 		} else{
-			up.PowerUpType = 2;
+			if (!flashLightGenerated && rnd < 90){
+				up.PowerUpType = 1;
+			} else {
+				up.PowerUpType = 2;
+			}
 		}
 		switch(up.PowerUpType){
 		case 0:
-			up.PowerUpValue = (float)Random.Range(2,6);
+			up.PowerUpValue = (float)Random.Range(2,5);
 			break;
 		case 1:
+			flashLightGenerated = true;
 			up.PowerUpValue = 1f;
 			break;
 		case 2:
@@ -209,8 +251,13 @@ public class BuildingGen : MonoBehaviour {
 							Instantiate(node, new Vector3(x,(relY+0.5f),z), Quaternion.identity);
 						}
 					} else{
+						// make a node cross at the middle
 						GameObject supernode = (GameObject)Instantiate(node, new Vector3(x,(relY+0.5f),z), Quaternion.identity);
 						supernode.GetComponent<NodeScript>().isSuper = true;
+						// set step reset at the exits
+						if (x == relX - 12 || x == relX + 12 || z == relZ - 12 || z == relZ + 12){
+							supernode.GetComponent<NodeScript>().canReset = true;
+						}
 					}
 				}
 			}
