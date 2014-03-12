@@ -8,8 +8,8 @@ public class TrialPatrol : MonoBehaviour {
 	public GameObject targetNode;
 	public GameObject player;
 	public int stepsInRoom = 0;
-	public float nodeDistance = 20f;
-	public float baseSpeed = 1f;
+	public float nodeDistance = 25f;
+	public float baseSpeed = 5f;
 	public float rotation = 2.0f;
 	Texture2D fadeTexture;
 	float moveSpeed;
