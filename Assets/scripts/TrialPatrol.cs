@@ -28,6 +28,7 @@ public class TrialPatrol : MonoBehaviour {
 
 		//Find an initial node to be lastNode
 		targetNode = Sense.startNode(gameObject, Sense.nearbyNodes(gameObject, nodeDistance));
+		lastNode = Sense.startNode(gameObject, Sense.nearbyNodes(gameObject, nodeDistance));
 	}
 	
 	// Update is called once per frame
