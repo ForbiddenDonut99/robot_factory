@@ -17,7 +17,7 @@ public class TrialPatrol : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		fadeTexture = Resources.Load<Texture2D>("black");
-		state = "MoveToNode";
+		state = "FindNode";
 		moveSpeed = baseSpeed;
 		guardController = GetComponent<CharacterController>();
 		player = GameObject.FindGameObjectWithTag("Player");
