@@ -28,6 +28,12 @@ public class BuildingGen : MonoBehaviour {
 
 	float roomWidth = 68f; // size of the rooms
 	public float powerupChance = 25f;
+	public float guardChance = 40f;
+
+	// within the room
+	GameObject cubiclePreFab;
+	GameObject node;
+	public float cubicleChance = 28.57f;
 
 	// Use this for initialization
 	void Start () {
@@ -41,6 +47,9 @@ public class BuildingGen : MonoBehaviour {
 		player = (GameObject)Resources.Load("PlayerRobot");
 		conveyorBelt = (GameObject)Resources.Load("ConveyorBelt");
 		escapePad = (GameObject)Resources.Load("EscapePad");
+
+		cubiclePreFab = (GameObject)Resources.Load("Cubicle");
+		node = (GameObject)Resources.Load("Node");
 
 		// mark places to generate a room as 1
 		int[,] roomTypeArray = new int[4,4];
@@ -145,7 +154,12 @@ public class BuildingGen : MonoBehaviour {
 
 						// generate guards not on the first level and not next to starting room
 						if(roomType == 1 && i != 0 && roomTypeArray[i-1,j] != -1 && roomTypeArray[i-1,j] != 3){
-							Instantiate(guard, new Vector3(i*roomWidth,3f,j*roomWidth), Quaternion.identity);
+							if (Random.Range(0f,100f) <= guardChance){
+								Instantiate(guard, new Vector3(i*roomWidth,3f,j*roomWidth), Quaternion.identity);
+							}
+						}
+						if(roomType == 1 || roomType == 2){
+							GenerateRoomStuff(0, new Vector3(i*roomWidth,0f,j*roomWidth));
 						}
 					}
 				}
@@ -173,6 +187,33 @@ public class BuildingGen : MonoBehaviour {
 		case 2:
 			up.PowerUpValue = (float)Random.Range(1,4);
 			break;
+		}
+	}
+
+	void GenerateRoomStuff(int roomType, Vector3 roomCenter){
+		if (roomType == 0){
+			// office
+			float relX = roomCenter.x;
+			float relY = roomCenter.y;
+			float relZ = roomCenter.z;
+			int rotation;
+			//Office is super simple. Double for loop to make a grid of nodes or cubicles.
+			for(float x = (relX-12);x<=(relX+12);x+=4){
+				for(float z = (relZ-12);z<=(relZ+12);z+=4){
+					rotation = (Random.Range (0,4)*90);
+					if(x != relX && z != relZ){
+						if (Random.Range(0,101) <= cubicleChance){
+							Instantiate(cubiclePreFab, new Vector3(x,relY,z), Quaternion.Euler(new Vector3(270f, rotation, 0)));
+						}
+						else{
+							Instantiate(node, new Vector3(x,(relY+0.5f),z), Quaternion.identity);
+						}
+					} else{
+						GameObject supernode = (GameObject)Instantiate(node, new Vector3(x,(relY+0.5f),z), Quaternion.identity);
+						supernode.GetComponent<NodeScript>().isSuper = true;
+					}
+				}
+			}
 		}
 	}
 	//	
