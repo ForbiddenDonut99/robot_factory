@@ -102,7 +102,7 @@ public class Sense : MonoBehaviour {
 		}
 		//Based on being close and moving.
 		if(Physics.Raycast(self.transform.position, player.transform.position - self.transform.position, out hit, 7.5f)){
-			if (hit.transform.tag == "Player" && detectSpeed >= 0.25f) result = true;
+			if (hit.transform.tag == "Player" && (detectSpeed >= 0.2f || detectSpeed <= -0.2f)) result = true;
 		}
 		return result;
 	}

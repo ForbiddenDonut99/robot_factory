@@ -11,10 +11,12 @@ public class TrialPatrol : MonoBehaviour {
 	public float nodeDistance = 20f;
 	public float baseSpeed = 1f;
 	public float rotation = 2.0f;
+	Texture2D fadeTexture;
 	float moveSpeed;
 	CharacterController guardController;
 	// Use this for initialization
 	void Start () {
+		fadeTexture = Resources.Load<Texture2D>("black");
 		state = "FindNode";
 		moveSpeed = baseSpeed;
 		guardController = GetComponent<CharacterController>();
@@ -104,7 +106,6 @@ public class TrialPatrol : MonoBehaviour {
 	float alpha = 0;
 	float restartCountDown = 5.0f;
 	GUIStyle endTextStyle = new GUIStyle();
-	public Texture2D fadeTexture;
 
 	void OnGUI(){
 		if(isGameOver){
