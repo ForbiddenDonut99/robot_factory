@@ -84,6 +84,16 @@ public class Sense : MonoBehaviour {
 		}
 		else return null;
 	}
+	public static GameObject startNode(GameObject self, GameObject[] nodes){
+		GameObject result = null;
+		float minimum = Mathf.Infinity;
+		foreach(GameObject node in nodes){
+			if(Utility.getRange(self, node) < minimum){
+				result = node;
+			} 
+		}
+		return result;
+	}
 
 	public static bool player (GameObject self, GameObject player){
 		bool result = false;

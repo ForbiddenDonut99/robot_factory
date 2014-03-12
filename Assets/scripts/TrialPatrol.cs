@@ -17,7 +17,7 @@ public class TrialPatrol : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		fadeTexture = Resources.Load<Texture2D>("black");
-		state = "FindNode";
+		state = "MoveToNode";
 		moveSpeed = baseSpeed;
 		guardController = GetComponent<CharacterController>();
 		player = GameObject.FindGameObjectWithTag("Player");
@@ -25,6 +25,9 @@ public class TrialPatrol : MonoBehaviour {
 		endTextStyle.normal.textColor = Color.white;
 		endTextStyle.fontSize = 24;
 		endTextStyle.alignment = TextAnchor.MiddleCenter;
+
+		//Find an initial node to be lastNode
+		targetNode = Sense.startNode(gameObject, Sense.nearbyNodes(gameObject, nodeDistance));
 	}
 	
 	// Update is called once per frame
