@@ -84,9 +84,12 @@ public class TrialPatrol : MonoBehaviour {
 				state = "FindNode";
 			}
 			else{
-				Vector3 finalFacing = (targetNode.GetComponent<Transform>().position - transform.position).normalized;
-				transform.forward = Vector3.Lerp (transform.forward, finalFacing, Time.deltaTime*rotation);
 				guardController.Move (Vector3.Normalize(targetNode.transform.position - transform.position)*Time.deltaTime*moveSpeed);
+
+				Quaternion newRotation = Quaternion.LookRotation(targetNode.transform.position - transform.position);
+				newRotation.x = 0f;
+				newRotation.z = 0f;
+				transform.rotation = Quaternion.Lerp(transform.rotation, newRotation, Time.deltaTime*rotation);
 			}
 			break;
 
@@ -97,8 +100,11 @@ public class TrialPatrol : MonoBehaviour {
 			}
 			else{
 				guardController.Move (Vector3.Normalize(player.transform.position - transform.position)*Time.deltaTime*moveSpeed*1.5f);
-				Vector3 finalFacing = (player.GetComponent<Transform>().position - transform.position).normalized;
-				transform.forward = Vector3.Lerp (transform.forward, finalFacing, Time.deltaTime*rotation);
+
+				Quaternion newRotation = Quaternion.LookRotation(player.transform.position - transform.position);
+				newRotation.x = 0f;
+				newRotation.z = 0f;
+				transform.rotation = Quaternion.Lerp(transform.rotation, newRotation, Time.deltaTime*rotation);
 			}
 			break;
 		
