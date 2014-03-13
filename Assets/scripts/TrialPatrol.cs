@@ -36,7 +36,7 @@ public class TrialPatrol : MonoBehaviour {
 
 		//Check for game over.
 		if(Vector3.Distance(transform.position, player.transform.position) < 1.2f && !(stunTime > 0.0f)){
-			Debug.Log("PLAYER CAUGHT");
+			//Debug.Log("PLAYER CAUGHT");
 			player.GetComponent<RobotController>().speed = 0.0f;
 			player.GetComponent<RobotController>().stunGunAmmo = 0;
 			isGameOver = true;
@@ -59,7 +59,7 @@ public class TrialPatrol : MonoBehaviour {
 		//Check for player detection.
 		if(Sense.player(gameObject, player)){
 			state = "ChasePlayer";
-			Debug.Log ("Hunting Player!");
+			//Debug.Log ("Hunting Player!");
 			rotation = 8.0f;
 		}
 		else rotation = 2.0f;
@@ -93,7 +93,7 @@ public class TrialPatrol : MonoBehaviour {
 		case ("ChasePlayer"):
 			if (!Sense.player(gameObject, player)){
 				state = "FindNode";
-				Debug.Log ("Lost sight of Player.");
+				//Debug.Log ("Lost sight of Player.");
 			}
 			else{
 				guardController.Move (Vector3.Normalize(player.transform.position - transform.position)*Time.deltaTime*moveSpeed*1.5f);

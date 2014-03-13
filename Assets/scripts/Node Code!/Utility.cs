@@ -44,13 +44,13 @@ public class Utility : MonoBehaviour {
 		GameObject result = lastNode;
 
 		if(lastNode.GetComponent<NodeScript>().isSuper && superOptions == 1 && !lastNode.GetComponent<NodeScript>().isOff && Random.value < superWeight && exits != null){
-			Debug.Log("Returned to "+lastNode+" because we wanted to escape, but also dead end.");
+			//Debug.Log("Returned to "+lastNode+" because we wanted to escape, but also dead end.");
 			return lastNode; //if we wanna get out, but there's only one option, use this.
 		}
 
 
 		else if(options == 1 && !lastNode.GetComponent<NodeScript>().isOff){
-			Debug.Log ("Returned to " + lastNode+ " because we hit a dead end.");
+			//Debug.Log ("Returned to " + lastNode+ " because we hit a dead end.");
 			return lastNode; //if there's only one option, we're at a dead end, and we need to go back.
 		}
 
@@ -63,7 +63,7 @@ public class Utility : MonoBehaviour {
 				}
 				else selected = false;
 			}
-			Debug.Log ("We chose " + result+ " because we wanted to leave the room.");
+			//Debug.Log ("We chose " + result+ " because we wanted to leave the room.");
 			return result;
 		}
 
@@ -76,7 +76,7 @@ public class Utility : MonoBehaviour {
 				}
 				else selected = false;
 			}
-			Debug.Log ("We chose " + result+ " because we wanted a SuperNode.");
+			//Debug.Log ("We chose " + result+ " because we wanted a SuperNode.");
 			return result;
 		}
 		else if(nodes != null){//Settle for a normal node, possibly a super node.
@@ -88,7 +88,7 @@ public class Utility : MonoBehaviour {
 				}
 				else selected = false;
 			}
-			Debug.Log (result+ " was chosen from "+options+" choices.");
+			//Debug.Log (result+ " was chosen from "+options+" choices.");
 			return result;
 		}
 		else return null; //If there aren't any nodes in range, return null instead of crashing.
