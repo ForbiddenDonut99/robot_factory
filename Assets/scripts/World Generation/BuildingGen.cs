@@ -242,7 +242,9 @@ public class BuildingGen : MonoBehaviour {
 		GameObject resetnode;
 		resetnode = (GameObject)Instantiate(node, new Vector3(roomCenter.x + 12f * xMultiplier,0.5f,roomCenter.z + 12f * zMultiplier), Quaternion.identity);
 		resetnode.GetComponent<NodeScript>().canReset = true;
+		resetnode.GetComponent<NodeScript>().isSuper = true;
 		resetnode = (GameObject)Instantiate(node, new Vector3(roomCenter.x + 16f * xMultiplier,0.5f,roomCenter.z + 16f * zMultiplier), Quaternion.identity);
 		resetnode.GetComponent<NodeScript>().canReset = true;
+		resetnode.GetComponent<NodeScript>().isSuper = true;
 	}
 }

@@ -63,7 +63,7 @@ public class Utility : MonoBehaviour {
 				}
 				else selected = false;
 			}
-			Debug.Log ("We chose " + result+ " because we wanted a SuperNode.");
+			Debug.Log ("We chose " + result+ " because we wanted to leave the room.");
 			return result;
 		}
 

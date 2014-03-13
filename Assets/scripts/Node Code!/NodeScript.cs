@@ -15,9 +15,6 @@ public class NodeScript : MonoBehaviour {
 		gameObject.tag = "Node";
 
 	}
-	void Update(){
-		if(canReset)isSuper = false;
-	}
 
 	void OnTriggerEnter (Collider other){
 		//if the guard passes through, makes node ineligible for selection.
