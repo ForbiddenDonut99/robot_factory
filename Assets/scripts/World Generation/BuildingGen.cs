@@ -4,12 +4,12 @@ using System.Collections;
 public class BuildingGen : MonoBehaviour {
 
 	/* ROOM TYPES:
+	 * -3: Row Move Room that's also a starting room
 	 * -2: Exit Room
 	 * -1: Starting Room
 	 * 0: None
 	 * 1: Normal Room. Connects to rooms in the same row, and type 2,3 rooms in the previous row
 	 * 2: Row Move Room. Connects to next row
-	 * 3: Row Move Room that's also a starting room
 	 */
 
 	//general
@@ -83,7 +83,7 @@ public class BuildingGen : MonoBehaviour {
 			case 4:
 				// go down
 				if(roomTypeArray[row,col] == -1){
-					roomTypeArray[row,col] = 3;
+					roomTypeArray[row,col] = -3;
 				} else{
 					roomTypeArray[row,col] = 2;
 				}
@@ -110,58 +110,37 @@ public class BuildingGen : MonoBehaviour {
 
 					// wall off dead ends. 
 					// 2 connecting type 1 rooms are also walled off so there's no straight way to the end
-					if(i == 0 || (roomTypeArray[i-1,j] != 2 && roomTypeArray[i-1,j] != 3)){
-						// 1 in 6 chance of generating a powerup
-						if (Random.Range(0f,100f) <= powerupChance && roomType != -1 && roomType != 3){
-							Instantiate(endBlocker, new Vector3(-32.5f+i*roomWidth,4f,0f+j*roomWidth), Quaternion.identity);
-							GeneratePowerUp(new Vector3(-30f+i*roomWidth,0.5f,0f+j*roomWidth));
-						} else{
-							Instantiate(doorBlocker, new Vector3(-15f+i*roomWidth,5f,0f+j*roomWidth), Quaternion.identity);
-						}
-					} else{
+					if(i == 0 || (roomTypeArray[i-1,j] != 2 && roomTypeArray[i-1,j] != -3)){
+						BlockOffWall(new Vector3(i*roomWidth,0f,j*roomWidth), -1, 0, roomType);
+					} else if(roomType >= 0){
 						// create the nodes connecting to the next room
 						GenerateConnectingNodes(new Vector3(i*roomWidth,0f,j*roomWidth), -1, 0);
 					}
 
-					if(roomType != 2 && roomType != 3){
-						if (Random.Range(0f,100f) <= powerupChance){
-							Instantiate(endBlocker, new Vector3(32.5f+i*roomWidth,4f,0f+j*roomWidth), Quaternion.identity);
-							GeneratePowerUp(new Vector3(30f+i*roomWidth,0.5f,0f+j*roomWidth));
-						} else{
-							Instantiate(doorBlocker, new Vector3(15f+i*roomWidth,5f,0f+j*roomWidth), Quaternion.identity);
-						}
-					} else{
+					if(roomType != 2 && roomType != -3){
+						BlockOffWall(new Vector3(i*roomWidth,0f,j*roomWidth), 1, 0, roomType);
+					} else if(roomType >= 0){
 						// create the nodes connecting to the next room
 						GenerateConnectingNodes(new Vector3(i*roomWidth,0f,j*roomWidth), 1, 0);
 					}
 
 					if(j == 0 || roomTypeArray[i,j-1] == 0){
-						if (Random.Range(0f,100f) <= powerupChance){
-							Instantiate(endBlocker, new Vector3(0f+i*roomWidth,4f,-32.5f+j*roomWidth), Quaternion.Euler(new Vector3(0f,90f,0f)));
-							GeneratePowerUp(new Vector3(0f+i*roomWidth,0.5f,-30f+j*roomWidth));
-						} else{
-							Instantiate(doorBlocker, new Vector3(0f+i*roomWidth,5f,-15f+j*roomWidth), Quaternion.Euler(new Vector3(0f,90f,0f)));
-						}
-					} else{
+						BlockOffWall(new Vector3(i*roomWidth,0f,j*roomWidth), 0, -1, roomType);
+					} else if(roomType >= 0){
 						// create the nodes connecting to the next room
 						GenerateConnectingNodes(new Vector3(i*roomWidth,0f,j*roomWidth), 0, -1);
 					}
 
 					if(j == 3 || roomTypeArray[i,j+1] == 0){
-						if (Random.Range(0f,100f) <= powerupChance){
-							Instantiate(endBlocker, new Vector3(0f+i*roomWidth,4f,32.5f+j*roomWidth), Quaternion.Euler(new Vector3(0f,90f,0f)));
-							GeneratePowerUp(new Vector3(0f+i*roomWidth,0.5f,30f+j*roomWidth));
-						} else{
-							Instantiate(doorBlocker, new Vector3(0f+i*roomWidth,5f,15f+j*roomWidth), Quaternion.Euler(new Vector3(0f,90f,0f)));
-						}
-					} else{
+						BlockOffWall(new Vector3(i*roomWidth,0f,j*roomWidth), 0, 1, roomType);
+					} else if(roomType >= 0){
 						// create the nodes connecting to the next room
 						GenerateConnectingNodes(new Vector3(i*roomWidth,0f,j*roomWidth), 0, 1);
 					}
 
 
 
-					if (roomType == -1 || roomType == 3){
+					if (roomType == -1 || roomType == -3){
 						// generate player
 						Instantiate(player, new Vector3(-12f+i*roomWidth,3f,j*roomWidth), Quaternion.Euler(new Vector3(0f,90f,0f)));
 						Instantiate(conveyorBelt, new Vector3(-12f+i*roomWidth,0f,j*roomWidth), Quaternion.Euler(new Vector3(-90f,0f,0f)));
@@ -226,17 +205,15 @@ public class BuildingGen : MonoBehaviour {
 					if(x != relX && z != relZ){
 						if (Random.Range(0,101) <= cubicleChance){
 							Instantiate(cubiclePreFab, new Vector3(x,relY,z), Quaternion.Euler(new Vector3(270f, rotation, 0)));
-						}
-						else{
+						} else{
 							Instantiate(node, new Vector3(x,(relY+0.5f),z), Quaternion.identity);
 						}
 					} else{
-						// make a node cross at the middle
-						GameObject supernode = (GameObject)Instantiate(node, new Vector3(x,(relY+0.5f),z), Quaternion.identity);
-						supernode.GetComponent<NodeScript>().isSuper = true;
 						// set step reset at the exits
-						if (x == relX - 12 || x == relX + 12 || z == relZ - 12 || z == relZ + 12){
-							supernode.GetComponent<NodeScript>().canReset = true;
+						if (x != relX - 12 && x != relX + 12 && z != relZ - 12 && z != relZ + 12){
+							// make a node cross at the middle
+							GameObject supernode = (GameObject)Instantiate(node, new Vector3(x,(relY+0.5f),z), Quaternion.identity);
+							supernode.GetComponent<NodeScript>().isSuper = true;
 						}
 					}
 				}
@@ -244,16 +221,28 @@ public class BuildingGen : MonoBehaviour {
 		}
 	}
 
+	void BlockOffWall(Vector3 roomCenter, int xMultiplier, int zMultiplier, int roomType){
+		// choose to block off the door and generate a powerup or block off entire wall
+		if (Random.Range(0f,100f) <= powerupChance){
+			Instantiate(endBlocker, new Vector3(32.5f*xMultiplier+roomCenter.x,4f,32.5f*zMultiplier+roomCenter.z), Quaternion.Euler(new Vector3(0f,90f*zMultiplier,0f)));
+			GeneratePowerUp(new Vector3(30f*xMultiplier+roomCenter.x,0.5f,30f*zMultiplier+roomCenter.z));
+		} else{
+			Instantiate(doorBlocker, new Vector3(15f*xMultiplier+roomCenter.x,5f,15f*zMultiplier+roomCenter.z), Quaternion.Euler(new Vector3(0f,90f*zMultiplier,0f)));
+		}
+		if (roomType >= 0){
+			Instantiate(node, new Vector3(12f*xMultiplier+roomCenter.x,0.5f,12f*zMultiplier+roomCenter.z), Quaternion.identity);
+		}
+	}
+	
 	void GenerateConnectingNodes(Vector3 roomCenter, int xMultiplier, int zMultiplier){
 		// create the nodes connecting to the next room
 		for(int n = 0; n < 4; n++){
 			Instantiate(node, new Vector3(roomCenter.x + (20+n*4f) * xMultiplier,(0.5f),roomCenter.z + (20+n*4f) * zMultiplier), Quaternion.identity);
-			Debug.Log ("MADE AOT node");
 		}
 		GameObject resetnode;
-		resetnode = (GameObject)Instantiate(node, new Vector3(roomCenter.x + (16f) * xMultiplier,0.5f,roomCenter.z + (16f) * zMultiplier), Quaternion.identity);
+		resetnode = (GameObject)Instantiate(node, new Vector3(roomCenter.x + 12f * xMultiplier,0.5f,roomCenter.z + 12f * zMultiplier), Quaternion.identity);
 		resetnode.GetComponent<NodeScript>().canReset = true;
-		resetnode.GetComponent<NodeScript>().isSuper = false;
-		Debug.Log ("more more more!");
+		resetnode = (GameObject)Instantiate(node, new Vector3(roomCenter.x + 16f * xMultiplier,0.5f,roomCenter.z + 16f * zMultiplier), Quaternion.identity);
+		resetnode.GetComponent<NodeScript>().canReset = true;
 	}
 }
