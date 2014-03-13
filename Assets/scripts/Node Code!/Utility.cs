@@ -31,8 +31,6 @@ public class Utility : MonoBehaviour {
 		GameObject[] nodes;
 		nodes = Sense.nearbyNodes(self, distance);
 		if (nodes == null)return null;
-		GameObject[] resets;
-		resets = Sense.resetNodes(nodes);
 		GameObject[] exits;
 		exits = Sense.exitNodes(nodes);
 		int options = nodes.Length;
@@ -52,19 +50,6 @@ public class Utility : MonoBehaviour {
 		else if(options == 1 && !lastNode.GetComponent<NodeScript>().isOff){
 			//Debug.Log ("Returned to " + lastNode+ " because we hit a dead end.");
 			return lastNode; //if there's only one option, we're at a dead end, and we need to go back.
-		}
-
-		else if(Random.value < superWeight && resets != null){//try to find a reset node instead
-			while(!selected){
-				int choice = 0;
-				if(resets[choice] != lastNode){ // Makes sure the returned node isn't where we just came from.
-					selected = true;			//Tries over and over until it comes up with one.
-					result = resets[choice];
-				}
-				else selected = false;
-			}
-			//Debug.Log ("We chose " + result+ " because we wanted to leave the room.");
-			return result;
 		}
 
 		else if(Random.value < superWeight && exits != null){//try to find an exit node instead
