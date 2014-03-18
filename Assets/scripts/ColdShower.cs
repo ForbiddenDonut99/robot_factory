@@ -25,8 +25,7 @@ public class ColdShower : MonoBehaviour {
 				Debug.Log ("No Homo, bro.");
 			}
 			record = transform.position;
-			Debug.Log ("Position Updated!");
-			yield return new WaitForSeconds(1.5f);
+			yield return new WaitForSeconds(0.2f);
 		}
 	}
 

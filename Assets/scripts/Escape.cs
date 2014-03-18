@@ -33,7 +33,8 @@ public class Escape : MonoBehaviour {
 			if(alpha >= 1.0f){
 				GUI.color = Color.white;
 				int powerups = player.GetComponent<RobotController>().powerUpCounter;
-				string winTxt = "March 12, 2172.\n The first sentient robot escaped from a factory.";
+				string winTxt = Utility.victoryDate();
+				winTxt += "\n The first sentient robot escaped from a factory.";
 				textCountDown -= Time.deltaTime;
 				Color color;
 				// fade out first text

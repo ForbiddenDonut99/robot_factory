@@ -77,7 +77,9 @@ public class Utility : MonoBehaviour {
 			return result;
 		}
 		else return null; //If there aren't any nodes in range, return null instead of crashing.
+	}
 
-
+	public static string victoryDate(){
+		return (System.DateTime.Now.AddYears(158).ToLongDateString());
 	}
 }
