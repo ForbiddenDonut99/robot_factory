@@ -16,7 +16,9 @@ public class BuildingGen : MonoBehaviour {
 	GameObject room;
 	GameObject doorBlocker;
 	GameObject endBlocker;
-	GameObject powerupCube;
+	GameObject StunGun;
+	GameObject Wheel;
+	GameObject Flashlight;
 	GameObject guard;
 
 	bool flashLightGenerated = false;
@@ -43,7 +45,9 @@ public class BuildingGen : MonoBehaviour {
 		room = (GameObject)Resources.Load("Room");
 		doorBlocker = (GameObject)Resources.Load("DoorBlocker");
 		endBlocker = (GameObject)Resources.Load("EndBlocker");
-		powerupCube = (GameObject)Resources.Load("PowerupCube");
+		Wheel = (GameObject)Resources.Load("PU_Wheel");
+		Flashlight = (GameObject)Resources.Load("PU_Flashlight");
+		StunGun = (GameObject)Resources.Load("PU_Stungun");
 		guard = (GameObject)Resources.Load("Guard");
 
 		player = (GameObject)Resources.Load("PlayerRobot");
@@ -163,7 +167,28 @@ public class BuildingGen : MonoBehaviour {
 		}
 	}
 	void GeneratePowerUp(Vector3 position){
-		GameObject powerup = (GameObject)Instantiate(powerupCube, position, Quaternion.identity);
+
+		float rnd = Random.Range(0f,100f);
+		if (rnd<50){
+			GameObject wheel = (GameObject)Instantiate(Wheel, position, Quaternion.identity);
+			wheel.GetComponent<PowerUp>().PowerUpValue = (float)Random.Range(2,5);
+		}
+		else if (rnd < 60){
+			flashLightGenerated = true;
+			GameObject flashlight = (GameObject)Instantiate(Flashlight, position, Quaternion.identity);
+			flashlight.GetComponent<PowerUp>().PowerUpValue = 1f;
+		}
+		else {
+			if (!flashLightGenerated && rnd <90){
+				GameObject flashlight = (GameObject)Instantiate(Flashlight, position, Quaternion.identity);
+				flashlight.GetComponent<PowerUp>().PowerUpValue = 1f;
+			}
+			else{
+				GameObject gun = (GameObject)Instantiate(StunGun, position, Quaternion.identity);
+				gun.GetComponent<PowerUp>().PowerUpValue = (float)Random.Range(1,4);
+			}
+		}
+		/*GameObject powerup = (GameObject)Instantiate(powerupCube, position, Quaternion.identity);
 		PowerUp up = powerup.GetComponent<PowerUp>();
 		float rnd = Random.Range(0f,100f);
 		if (rnd < 50){
@@ -188,7 +213,7 @@ public class BuildingGen : MonoBehaviour {
 		case 2:
 			up.PowerUpValue = (float)Random.Range(1,4);
 			break;
-		}
+		}*/
 	}
 
 	void GenerateRoomStuff(int roomType, Vector3 roomCenter){
