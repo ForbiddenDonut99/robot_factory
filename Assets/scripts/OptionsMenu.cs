@@ -8,6 +8,7 @@ public class OptionsMenu : MonoBehaviour {
 	public static int height = 1024;
 	public static float sfx = 1f;
 	int state = 0;
+	string ratio = "(5:4)";
 	public GameObject Line1;
 	public GameObject Line2;
 	public GameObject Line3;
@@ -29,7 +30,7 @@ public class OptionsMenu : MonoBehaviour {
 		}
 
 		//Update the lines pertaining to changeable options.
-		resolution.GetComponent<TextMesh>().text = width + "*" + height;
+		resolution.GetComponent<TextMesh>().text = width + "*" + height + "  " + ratio;
 		Volume.GetComponent<TextMesh>().text = (sfx*10).ToString("#.")+"0%";
 		if(fullscreen){
 			Fullscreen.GetComponent<TextMesh>().text = "[x]";
@@ -46,34 +47,42 @@ public class OptionsMenu : MonoBehaviour {
 				case 1920:
 					width = 640;
 					height = 480;
+					ratio = "(4:3)";
 					break;
 				case 640:
 					width = 800;
 					height = 600;
+					ratio = "(4:3)";
 					break;
 				case 800:
 					width = 1024;
 					height = 768;
+					ratio = "(4:3)";
 					break;
 				case 1024:
 					width = 1280;
 					height = 1024;
+					ratio = "(5:4)";
 					break;
 				case 1280:
 					width = 1440;
 					height = 900;
+					ratio = "(16:10)";
 					break;
 				case 1440:
 					width = 1680;
 					height = 1050;
+					ratio = "(16:10)";
 					break;
 				case 1680:
 					width = 1600;
 					height = 900;
+					ratio = "(16:9)";
 					break;
 				case 1600:
 					width = 1920;
 					height = 1080;
+					ratio = "(16:9)";
 					break;
 				}
 				break;

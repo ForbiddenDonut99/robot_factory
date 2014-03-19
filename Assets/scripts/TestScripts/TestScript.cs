@@ -7,8 +7,8 @@ public class TestScript : MonoBehaviour {
 	public float distance = 150f;
 	private int counter = 0;
 	void Start () {
-
-		GameObject[] surroundings;
+		Debug.Log(OptionsMenu.sfx);
+		/*GameObject[] surroundings;
 		surroundings = Sense.nearbyNodes(gameObject, distance);
 		if(surroundings != null){
 			foreach(GameObject node in surroundings){
@@ -16,7 +16,7 @@ public class TestScript : MonoBehaviour {
 				Debug.Log (node + "was found!");
 			}
 		}
-		Debug.Log (counter + " nodes found.");
+		Debug.Log (counter + " nodes found.");*/
 	}
 	
 	// Update is called once per frame
