@@ -4,15 +4,8 @@ using System.Collections.Generic; // for list
 
 public class GuardPatrol : MonoBehaviour {
 	public GameObject player;
-	public float baseSpeed = 1f;
+	public float baseSpeed = 5f;
 	public float wallBuffer = 2f;
-
-	// node related
-	public int stepsInRoom = 0;
-	public GameObject targetNode;
-	public GameObject lastNode;
-	public string state = "";
-	public float nodeDistance = 20f;
 
 	// local
 	CharacterController guardController;
@@ -61,8 +54,6 @@ public class GuardPatrol : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
-		state = "FindNode";
-
 		guardController = GetComponent<CharacterController>();
 		moveSpeed = baseSpeed;
 
@@ -106,25 +97,11 @@ public class GuardPatrol : MonoBehaviour {
 			moveSpeed = baseSpeed;
 			if (continueRotation()){
 //				Debug.Log("rotating");
-			} else if (state == "FindNode") {
-				targetNode = Utility.selectNode(gameObject, nodeDistance, stepsInRoom, lastNode);
-				state = "MoveToNode";
-				if(targetNode != null){
-					stepsInRoom++;
-					walkTowards(targetNode.transform);
-				}
 			} else if (walkStraight()){
 //				Debug.Log("no walls");
 			} else{
 //				Debug.Log("switch direction");
-				if(targetNode != null){
-					targetNode = Utility.selectNode(gameObject, nodeDistance, stepsInRoom, lastNode);
-					state = "MoveToNode";
-					stepsInRoom++;
-					walkTowards(targetNode.transform);
-				} else {
-					randomWalk();
-				}
+				randomWalk();
 			}
 		}
 	}
