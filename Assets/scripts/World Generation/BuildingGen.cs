@@ -16,7 +16,9 @@ public class BuildingGen : MonoBehaviour {
 	GameObject room;
 	GameObject doorBlocker;
 	GameObject endBlocker;
-	GameObject powerupCube;
+	GameObject powerupWheels;
+	GameObject powerupFlashlight;
+	GameObject powerupStungun;
 	GameObject guard;
 
 	bool flashLightGenerated = false;
@@ -43,7 +45,9 @@ public class BuildingGen : MonoBehaviour {
 		room = (GameObject)Resources.Load("Room");
 		doorBlocker = (GameObject)Resources.Load("DoorBlocker");
 		endBlocker = (GameObject)Resources.Load("EndBlocker");
-		powerupCube = (GameObject)Resources.Load("PowerupCube");
+		powerupWheels = (GameObject)Resources.Load("Powerup-Wheels");
+		powerupFlashlight = (GameObject)Resources.Load("Powerup-Flashlight");
+		powerupStungun = (GameObject)Resources.Load("Powerup-Stungun");
 		guard = (GameObject)Resources.Load("Guard");
 
 		player = (GameObject)Resources.Load("PlayerRobot");
@@ -162,31 +166,38 @@ public class BuildingGen : MonoBehaviour {
 			}
 		}
 	}
+
 	void GeneratePowerUp(Vector3 position){
-		GameObject powerup = (GameObject)Instantiate(powerupCube, position, Quaternion.identity);
-		PowerUp up = powerup.GetComponent<PowerUp>();
+		int powerType;
 		float rnd = Random.Range(0f,100f);
 		if (rnd < 50){
-			up.PowerUpType = 0;
+			powerType = 0;
 		} else if (rnd < 60){
-			up.PowerUpType = 1;
+			powerType = 1;
 		} else{
 			if (!flashLightGenerated && rnd < 90){
-				up.PowerUpType = 1;
+				powerType = 1;
 			} else {
-				up.PowerUpType = 2;
+				powerType = 2;
 			}
 		}
-		switch(up.PowerUpType){
+		GameObject powerup;
+		switch(powerType){
 		case 0:
-			up.PowerUpValue = (float)Random.Range(2,5);
+			powerup = (GameObject)Instantiate(powerupWheels, position, Quaternion.Euler(new Vector3(-90f,0f,0f)));
+			powerup.GetComponent<PowerUp>().PowerUpType = powerType;
+			powerup.GetComponent<PowerUp>().PowerUpValue = (float)Random.Range(2,5);
 			break;
 		case 1:
+			powerup = (GameObject)Instantiate(powerupFlashlight, new Vector3(position.x, position.y + 0.15f, position.z), Quaternion.identity);
+			powerup.GetComponent<PowerUp>().PowerUpType = powerType;
 			flashLightGenerated = true;
-			up.PowerUpValue = 1f;
+			powerup.GetComponent<PowerUp>().PowerUpValue = 1f;
 			break;
 		case 2:
-			up.PowerUpValue = (float)Random.Range(1,4);
+			powerup = (GameObject)Instantiate(powerupStungun, new Vector3(position.x, position.y + 0.05f, position.z), Quaternion.identity);
+			powerup.GetComponent<PowerUp>().PowerUpType = powerType;
+			powerup.GetComponent<PowerUp>().PowerUpValue = (float)Random.Range(1,4);
 			break;
 		}
 	}
@@ -225,7 +236,7 @@ public class BuildingGen : MonoBehaviour {
 		// choose to block off the door and generate a powerup or block off entire wall
 		if (Random.Range(0f,100f) <= powerupChance){
 			Instantiate(endBlocker, new Vector3(32.5f*xMultiplier+roomCenter.x,4f,32.5f*zMultiplier+roomCenter.z), Quaternion.Euler(new Vector3(0f,90f*zMultiplier,0f)));
-			GeneratePowerUp(new Vector3(30f*xMultiplier+roomCenter.x,0.5f,30f*zMultiplier+roomCenter.z));
+			GeneratePowerUp(new Vector3(28f*xMultiplier+roomCenter.x,0f,28f*zMultiplier+roomCenter.z));
 		} else{
 			Instantiate(doorBlocker, new Vector3(15f*xMultiplier+roomCenter.x,5f,15f*zMultiplier+roomCenter.z), Quaternion.Euler(new Vector3(0f,90f*zMultiplier,0f)));
 		}

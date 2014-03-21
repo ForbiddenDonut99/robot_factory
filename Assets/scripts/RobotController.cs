@@ -176,7 +176,9 @@ public class RobotController: MonoBehaviour
 				if(Physics.Raycast(mouseRay, out rayHit, 200f)){
 					if (rayHit.transform.GetComponent<TrialPatrol>() != null){
 						rayHit.transform.GetComponent<TrialPatrol>().stun(5.0f);
-					}
+					} else if (rayHit.transform.GetComponent<GuardPatrol>() != null){
+						rayHit.transform.GetComponent<GuardPatrol>().stun(5.0f);
+					} 
 				}
 				stunGunAmmo --;
 				ammoText.text = "Ammo: " + stunGunAmmo;
