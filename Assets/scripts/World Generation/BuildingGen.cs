@@ -181,10 +181,11 @@ public class BuildingGen : MonoBehaviour {
 				powerType = 2;
 			}
 		}
+		position = new Vector3(position.x + Random.Range(-2f,2f), position.y, position.z + Random.Range(-2f,2f));
 		GameObject powerup;
 		switch(powerType){
 		case 0:
-			powerup = (GameObject)Instantiate(powerupWheels, position, Quaternion.Euler(new Vector3(-90f,0f,0f)));
+			powerup = (GameObject)Instantiate(powerupWheels, new Vector3(position.x, position.y, position.z), Quaternion.Euler(new Vector3(-90f,0f,0f)));
 			powerup.GetComponent<PowerUp>().PowerUpType = powerType;
 			powerup.GetComponent<PowerUp>().PowerUpValue = (float)Random.Range(2,5);
 			break;
