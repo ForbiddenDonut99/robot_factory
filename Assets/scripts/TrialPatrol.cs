@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class TrialPatrol : MonoBehaviour {
-
+	
 	public string state = "";
 	public GameObject lastNode;
 	public GameObject targetNode;
@@ -10,22 +10,24 @@ public class TrialPatrol : MonoBehaviour {
 	public int stepsInRoom = 0;
 	public float nodeDistance = 25f;
 	public float baseSpeed = 5f;
-	public float rotation = 2.0f;
+	public float baseRotation = 4.0f;
 	Texture2D fadeTexture;
 	float moveSpeed;
+	float rotation;
 	CharacterController guardController;
 	// Use this for initialization
 	void Start () {
 		fadeTexture = Resources.Load<Texture2D>("black");
 		state = "FindNode";
 		moveSpeed = baseSpeed;
+		rotation = baseRotation;
 		guardController = GetComponent<CharacterController>();
 		player = GameObject.FindGameObjectWithTag("Player");
-
+		
 		endTextStyle.normal.textColor = Color.white;
 		endTextStyle.fontSize = 24;
 		endTextStyle.alignment = TextAnchor.MiddleCenter;
-
+		
 		//Find an initial node to be lastNode
 		targetNode = Sense.startNode(gameObject, Sense.nearbyNodes(gameObject, nodeDistance));
 		lastNode = Sense.startNode(gameObject, Sense.nearbyNodes(gameObject, nodeDistance));
@@ -33,7 +35,7 @@ public class TrialPatrol : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-
+		
 		//Check for game over.
 		if(Vector3.Distance(transform.position, player.transform.position) < 1.2f && !(stunTime > 0.0f)){
 			//Debug.Log("PLAYER CAUGHT");
@@ -42,7 +44,7 @@ public class TrialPatrol : MonoBehaviour {
 			isGameOver = true;
 			return;
 		}
-
+		
 		//Be stunned.
 		if(stunTime > 0.0f){
 			// handle stun
@@ -55,22 +57,22 @@ public class TrialPatrol : MonoBehaviour {
 			return;
 		}
 		//else transform.rotation = Quaternion.Euler();
-
+		
 		//Check for player detection.
 		if(Sense.player(gameObject, player)){
 			state = "ChasePlayer";
 			//Debug.Log ("Hunting Player!");
-			rotation = 8.0f;
+			rotation = 4*baseRotation;
 		}
-		else rotation = 2.0f;
-
+		else rotation = baseRotation;
+		
 		//Reset the StepsInRoom counter if you go from reset node to reset node.
 		if(targetNode != null && lastNode != null){
 			if(targetNode.GetComponent<NodeScript>().canReset && lastNode.GetComponent<NodeScript>().canReset){
 				stepsInRoom = 0;
 			}
 		}
-
+		
 		//Main Switch Control
 		switch (state){
 		case ("FindNode"):
@@ -78,21 +80,21 @@ public class TrialPatrol : MonoBehaviour {
 			state = "MoveToNode";
 			stepsInRoom++;
 			break;
-
+			
 		case ("MoveToNode"):
 			if(targetNode == null){
 				state = "FindNode";
 			}
 			else{
 				guardController.Move (Vector3.Normalize(targetNode.transform.position - transform.position)*Time.deltaTime*moveSpeed);
-
+				
 				Quaternion newRotation = Quaternion.LookRotation(targetNode.transform.position - transform.position);
 				newRotation.x = 0f;
 				newRotation.z = 0f;
 				transform.rotation = Quaternion.Lerp(transform.rotation, newRotation, Time.deltaTime*rotation);
 			}
 			break;
-
+			
 		case ("ChasePlayer"):
 			if (!Sense.player(gameObject, player)){
 				state = "FindNode";
@@ -100,23 +102,23 @@ public class TrialPatrol : MonoBehaviour {
 			}
 			else{
 				guardController.Move (Vector3.Normalize(player.transform.position - transform.position)*Time.deltaTime*moveSpeed*1.5f);
-
+				
 				Quaternion newRotation = Quaternion.LookRotation(player.transform.position - transform.position);
 				newRotation.x = 0f;
 				newRotation.z = 0f;
 				transform.rotation = Quaternion.Lerp(transform.rotation, newRotation, Time.deltaTime*rotation);
 			}
 			break;
-		
-		
+			
+			
 		}
 	}
-
+	
 	bool isGameOver = false;
 	float alpha = 0;
 	float restartCountDown = 5.0f;
 	GUIStyle endTextStyle = new GUIStyle();
-
+	
 	void OnGUI(){
 		if(isGameOver){
 			alpha += 0.2f * Time.deltaTime;  
@@ -145,9 +147,9 @@ public class TrialPatrol : MonoBehaviour {
 			}
 		}
 	}
-
+	
 	float stunTime;
-
+	
 	public void stun(float time){
 		if(stunTime <= 0.0f){
 			//TODO: stun animation
