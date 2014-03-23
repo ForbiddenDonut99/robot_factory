@@ -9,22 +9,24 @@ public class RobotController: MonoBehaviour
 
 	// powerups
 	public int powerUpCounter = 0;  // for endgame score
-
 	public float speed = 4.0f;
 	public float maxSpeed = 16.0f;
 	public float lightBattery = 0.0f;
 	public float maxBattery = 10.0f;
 	public int stunGunAmmo = 0;
-	
+	public int normalCameraZoom = 75;
+	public int largeCameraZoom = 30;
+	public float zoomSpeed = 10f;
 	Light flashLight;
 	GUIText powerupText;
 	float powerupFadeAlpha = 0f;
+
 
 	// stungun stuff
 	Texture2D crosshairTexture;
 	Rect crosshairPosition;
 	GUIText ammoText;
-	Transform playerCameraTransform;
+	Camera playerCamera;
 
 	// gameover
 	public bool isWin = false;
@@ -70,7 +72,7 @@ public class RobotController: MonoBehaviour
 		crosshairTexture = (Texture2D)Resources.Load("crosshair");
 		crosshairPosition = new Rect((Screen.width - crosshairTexture.width)/2,(Screen.height - crosshairTexture.height)/2, 
 		                             crosshairTexture.width, crosshairTexture.height);
-		playerCameraTransform = transform.Find("Main Camera").transform;
+		playerCamera = transform.Find("Main Camera").GetComponent<Camera>();
 
 
 		// ammo counter 
@@ -185,7 +187,7 @@ public class RobotController: MonoBehaviour
 		// stun gun fire
 		if(Input.GetMouseButtonDown(0)){
 			if(stunGunAmmo > 0){
-				Ray mouseRay = new Ray(playerCameraTransform.position, playerCameraTransform.forward);
+				Ray mouseRay = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
 				RaycastHit rayHit = new RaycastHit();
 				if(Physics.Raycast(mouseRay, out rayHit, 200f)){
 					if (rayHit.transform.GetComponent<TrialPatrol>() != null){
@@ -197,6 +199,13 @@ public class RobotController: MonoBehaviour
 				stunGunAmmo --;
 				ammoText.text = "Ammo: " + stunGunAmmo;
 			}
+		}
+
+		// zoom
+		if(Input.GetMouseButton(1)){
+			playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView,largeCameraZoom,Time.deltaTime*zoomSpeed);
+		} else{
+			playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView,normalCameraZoom,Time.deltaTime*zoomSpeed);
 		}
 
 		//powerup pickup alert fade
