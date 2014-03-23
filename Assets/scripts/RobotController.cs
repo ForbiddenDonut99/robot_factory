@@ -19,11 +19,20 @@ public class RobotController: MonoBehaviour
 	Light flashLight;
 	GUIText powerupText;
 	float powerupFadeAlpha = 0f;
+
 	// stungun stuff
 	Texture2D crosshairTexture;
 	Rect crosshairPosition;
 	GUIText ammoText;
 	Transform playerCameraTransform;
+
+	// gameover
+	public bool isWin = false;
+	public bool isGameOver = false;
+	float alpha = 0;
+	float restartCountDown = 5.0f;
+	GUIStyle endTextStyle = new GUIStyle();
+	Texture2D fadeTexture;
 
 	// others
 
@@ -73,7 +82,7 @@ public class RobotController: MonoBehaviour
 		ammoText.color = Color.magenta;
 		ammoText.text = "Ammo: " + stunGunAmmo;
 
-		// powerup alert 
+		// powerup alert style
 		GameObject powerupObj = new GameObject("powerupText");
 		powerupObj.transform.position = new Vector3(0.5f,0.5f,0f);
 		powerupText = (GUIText)powerupObj.AddComponent(typeof(GUIText));
@@ -86,6 +95,11 @@ public class RobotController: MonoBehaviour
 		powerupText.color = color;
 		powerupText.text = "";
 
+		// gameover text style
+		endTextStyle.normal.textColor = Color.white;
+		endTextStyle.fontSize = 24;
+		endTextStyle.alignment = TextAnchor.MiddleCenter;
+		fadeTexture = Resources.Load<Texture2D>("black");
 
 		// the rest
         controller = GetComponent<CharacterController>();
@@ -200,6 +214,31 @@ public class RobotController: MonoBehaviour
     }
 	
 	void OnGUI(){
+		if(isGameOver){
+			alpha += 0.2f * Time.deltaTime;  
+			alpha = Mathf.Clamp01(alpha);   
+			GUI.color = new Color(0, 0, 0, alpha);
+			GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), fadeTexture);
+			
+			if(alpha >= 1.0f){
+				GUI.color = Color.white;
+				string gameOvertxt = "";
+				if(powerUpCounter == 0){
+					gameOvertxt = "\"What a piece of junk.\"";
+				} else if(powerUpCounter == 1){
+					gameOvertxt = "\"Now how did this thing walk off on its own?\"";
+				} else if(powerUpCounter == 2){
+					gameOvertxt = "\"Finally! When did robots get so hard to catch?\"";
+				} else{
+					gameOvertxt = "\"Whew! I think I've stopped a robot rebellion here!\"";
+				}
+				GUI.Label(new Rect(Screen.width/2-50f, Screen.height/2-25f, 100f, 50f), gameOvertxt, endTextStyle);
+				restartCountDown -= Time.deltaTime;
+				if (restartCountDown < 0.0f){
+					Application.LoadLevel(0);
+				}
+			}
+		}
 		// draw crosshair if there's ammo left
 		if(stunGunAmmo > 0){
 			GUI.DrawTexture(crosshairPosition, crosshairTexture);
@@ -207,6 +246,14 @@ public class RobotController: MonoBehaviour
 
 //		// show flashlight battery
 //		GUI.Box(new Rect(10, 10, Screen.width/2, 20), lightBattery + "/" + maxBattery);
+	}
+
+	public void GameOver(){
+		if(!isWin){
+			speed = 0.0f;
+			stunGunAmmo = 0;
+			isGameOver = true;
+		}
 	}
 	
 	public void PowerUp(int PowerUpType, float PowerUpValue){

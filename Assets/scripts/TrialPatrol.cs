@@ -11,22 +11,16 @@ public class TrialPatrol : MonoBehaviour {
 	public float nodeDistance = 25f;
 	public float baseSpeed = 5f;
 	public float baseRotation = 4.0f;
-	Texture2D fadeTexture;
 	float moveSpeed;
 	float rotation;
 	CharacterController guardController;
 	// Use this for initialization
 	void Start () {
-		fadeTexture = Resources.Load<Texture2D>("black");
 		state = "FindNode";
 		moveSpeed = baseSpeed;
 		rotation = baseRotation;
 		guardController = GetComponent<CharacterController>();
 		player = GameObject.FindGameObjectWithTag("Player");
-		
-		endTextStyle.normal.textColor = Color.white;
-		endTextStyle.fontSize = 24;
-		endTextStyle.alignment = TextAnchor.MiddleCenter;
 		
 		//Find an initial node to be lastNode
 		targetNode = Sense.startNode(gameObject, Sense.nearbyNodes(gameObject, nodeDistance));
@@ -39,9 +33,7 @@ public class TrialPatrol : MonoBehaviour {
 		//Check for game over.
 		if(Vector3.Distance(transform.position, player.transform.position) < 1.2f && !(stunTime > 0.0f)){
 			//Debug.Log("PLAYER CAUGHT");
-			player.GetComponent<RobotController>().speed = 0.0f;
-			player.GetComponent<RobotController>().stunGunAmmo = 0;
-			isGameOver = true;
+			player.GetComponent<RobotController>().GameOver();
 			return;
 		}
 		
@@ -101,7 +93,10 @@ public class TrialPatrol : MonoBehaviour {
 				//Debug.Log ("Lost sight of Player.");
 			}
 			else{
-				guardController.Move (Vector3.Normalize(player.transform.position - transform.position)*Time.deltaTime*moveSpeed*1.5f);
+				if(!player.GetComponent<RobotController>().isWin){
+					// don't move if game is already won
+					guardController.Move (Vector3.Normalize(player.transform.position - transform.position)*Time.deltaTime*moveSpeed*1.5f);
+				}
 				
 				Quaternion newRotation = Quaternion.LookRotation(player.transform.position - transform.position);
 				newRotation.x = 0f;
@@ -111,40 +106,6 @@ public class TrialPatrol : MonoBehaviour {
 			break;
 			
 			
-		}
-	}
-	
-	bool isGameOver = false;
-	float alpha = 0;
-	float restartCountDown = 5.0f;
-	GUIStyle endTextStyle = new GUIStyle();
-	
-	void OnGUI(){
-		if(isGameOver){
-			alpha += 0.2f * Time.deltaTime;  
-			alpha = Mathf.Clamp01(alpha);   
-			GUI.color = new Color(0, 0, 0, alpha);
-			GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), fadeTexture);
-			
-			if(alpha >= 1.0f){
-				GUI.color = Color.white;
-				int powerups = player.GetComponent<RobotController>().powerUpCounter;
-				string gameOvertxt = "";
-				if(powerups == 0){
-					gameOvertxt = "\"What a piece of junk.\"";
-				} else if(powerups == 1){
-					gameOvertxt = "\"Now how did this thing walk off on its own?\"";
-				} else if(powerups == 2){
-					gameOvertxt = "\"Finally! When did robots get so hard to catch?\"";
-				} else{
-					gameOvertxt = "\"Whew! I think I've stopped a robot rebellion here!\"";
-				}
-				GUI.Label(new Rect(Screen.width/2-50f, Screen.height/2-25f, 100f, 50f), gameOvertxt, endTextStyle);
-				restartCountDown -= Time.deltaTime;
-				if (restartCountDown < 0.0f){
-					Application.LoadLevel(0);
-				}
-			}
 		}
 	}
 	
