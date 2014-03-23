@@ -9,20 +9,20 @@ public class Escape : MonoBehaviour {
 	float alpha = 0;
 	float textCountDown = 10.0f;
 	float restartCountDown = 16.0f;
-	GUIStyle endTextStyle = new GUIStyle();
+	GUIStyle winTextStyle = new GUIStyle();
 	// Use this for initialization
 	void Start () {
 		// adjust style of text at win
-		endTextStyle.normal.textColor = Color.black;
-		endTextStyle.fontSize = 24;
-		endTextStyle.alignment = TextAnchor.MiddleCenter;
-		endTextStyle.fontStyle = FontStyle.Bold;
+		winTextStyle.normal.textColor = Color.black;
+		winTextStyle.fontSize = 24;
+		winTextStyle.alignment = TextAnchor.MiddleCenter;
+		winTextStyle.fontStyle = FontStyle.Bold;
 		
 		// load fadeout texture
 		fadeTexture = (Texture2D)Resources.Load("white");
 	}
 
-	// Handles Game Over
+	// Handles Winning
 	void OnGUI(){
 		if(win && transform.position.y > 3f){
 			alpha += 0.2f * Time.deltaTime;  
@@ -42,7 +42,7 @@ public class Escape : MonoBehaviour {
 					color = Color.black;
 					color.a = 0.4f * textCountDown;
 					color.a = Mathf.Clamp01(color.a);
-					endTextStyle.normal.textColor = color;
+					winTextStyle.normal.textColor = color;
 				}
 				if (textCountDown < 0f){
 					restartCountDown -= Time.deltaTime;
@@ -52,19 +52,19 @@ public class Escape : MonoBehaviour {
 						color = Color.black;
 						color.a = -0.2f * textCountDown;
 						color.a = Mathf.Clamp01(color.a);
-						endTextStyle.normal.textColor = color;
+						winTextStyle.normal.textColor = color;
 					} else{
 						// fade out second text
 						color = Color.black;
 						color.a = 0.2f * (restartCountDown-6f);
 						color.a = Mathf.Clamp01(color.a);
-						endTextStyle.normal.textColor = color;
+						winTextStyle.normal.textColor = color;
 					}
 					if (restartCountDown < 0.0f){
 						Application.LoadLevel(0);
 					}
 				}
-				GUI.Label(new Rect(Screen.width/2-75f, Screen.height/2-25f, 150f, 50f), winTxt, endTextStyle);
+				GUI.Label(new Rect(Screen.width/2-75f, Screen.height/2-25f, 150f, 50f), winTxt, winTextStyle);
 			}
 		}
 	}
@@ -84,6 +84,7 @@ public class Escape : MonoBehaviour {
 			RobotController playerControl = player.GetComponent<RobotController>();
 			playerControl.speed = 0.5f;
 			playerControl.stunGunAmmo = 0;
+			playerControl.isWin = true;
 			win = true;
 		}
 	}
