@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class BuildingGen : MonoBehaviour {
-
+	
 	/* ROOM TYPES:
 	 * -3: Row Move Room that's also a starting room
 	 * -2: Exit Room
@@ -11,7 +11,7 @@ public class BuildingGen : MonoBehaviour {
 	 * 1: Normal Room. Connects to rooms in the same row, and type 2,3 rooms in the previous row
 	 * 2: Row Move Room. Connects to next row
 	 */
-
+	
 	//general
 	GameObject room;
 	GameObject doorBlocker;
@@ -20,25 +20,25 @@ public class BuildingGen : MonoBehaviour {
 	GameObject powerupFlashlight;
 	GameObject powerupStungun;
 	GameObject guard;
-
+	
 	bool flashLightGenerated = false;
-
+	
 	// starting room
 	GameObject player;
 	GameObject conveyorBelt;
-
+	
 	// exit room
 	GameObject escapePad;
-
+	
 	float roomWidth = 68f; // size of the rooms
 	public float powerupChance = 25f;
 	public float guardChance = 80f;
-
+	
 	// within the room
 	GameObject cubiclePreFab;
 	GameObject node;
 	public float cubicleChance = 28.57f;
-
+	
 	// Use this for initialization
 	void Start () {
 		// load prefabs
@@ -49,20 +49,20 @@ public class BuildingGen : MonoBehaviour {
 		powerupFlashlight = (GameObject)Resources.Load("Powerup-Flashlight");
 		powerupStungun = (GameObject)Resources.Load("Powerup-Stungun");
 		guard = (GameObject)Resources.Load("Guard");
-
+		
 		player = (GameObject)Resources.Load("PlayerRobot");
 		conveyorBelt = (GameObject)Resources.Load("ConveyorBelt");
 		escapePad = (GameObject)Resources.Load("EscapePad");
-
+		
 		cubiclePreFab = (GameObject)Resources.Load("Cubicle");
 		node = (GameObject)Resources.Load("Node");
-
+		
 		// mark places to generate a room as 1
 		int[,] roomTypeArray = new int[4,4];
 		int row = 0;
 		int col = Random.Range(0,4);
 		int rooms;
-
+		
 		roomTypeArray[row,col] = -1; // player starting room
 		while(row < 4){
 			if(roomTypeArray[row,col] == 0){
@@ -99,10 +99,10 @@ public class BuildingGen : MonoBehaviour {
 				roomTypeArray[row-1,col] = -2;
 			}
 		}
-
+		
 		for(int i = 0; i < 4; i++){
 			for(int j = 0; j < 4; j++){
-//				Debug.Log(roomTypeArray[i,j]);
+				//				Debug.Log(roomTypeArray[i,j]);
 				int roomType = roomTypeArray[i,j];
 				if (roomType == 0){
 					// do nothing
@@ -110,8 +110,8 @@ public class BuildingGen : MonoBehaviour {
 				} else{
 					// generate room
 					Instantiate(room, new Vector3(i*roomWidth,0f,j*roomWidth), Quaternion.identity);
-
-
+					
+					
 					// wall off dead ends. 
 					// 2 connecting type 1 rooms are also walled off so there's no straight way to the end
 					if(i == 0 || (roomTypeArray[i-1,j] != 2 && roomTypeArray[i-1,j] != -3)){
@@ -120,30 +120,30 @@ public class BuildingGen : MonoBehaviour {
 						// create the nodes connecting to the next room
 						GenerateConnectingNodes(new Vector3(i*roomWidth,0f,j*roomWidth), -1, 0);
 					}
-
+					
 					if(roomType != 2 && roomType != -3){
 						BlockOffWall(new Vector3(i*roomWidth,0f,j*roomWidth), 1, 0, roomType);
 					} else if(roomType >= 0){
 						// create the nodes connecting to the next room
 						GenerateConnectingNodes(new Vector3(i*roomWidth,0f,j*roomWidth), 1, 0);
 					}
-
+					
 					if(j == 0 || roomTypeArray[i,j-1] == 0){
 						BlockOffWall(new Vector3(i*roomWidth,0f,j*roomWidth), 0, -1, roomType);
 					} else if(roomType >= 0){
 						// create the nodes connecting to the next room
 						GenerateConnectingNodes(new Vector3(i*roomWidth,0f,j*roomWidth), 0, -1);
 					}
-
+					
 					if(j == 3 || roomTypeArray[i,j+1] == 0){
 						BlockOffWall(new Vector3(i*roomWidth,0f,j*roomWidth), 0, 1, roomType);
 					} else if(roomType >= 0){
 						// create the nodes connecting to the next room
 						GenerateConnectingNodes(new Vector3(i*roomWidth,0f,j*roomWidth), 0, 1);
 					}
-
-
-
+					
+					
+					
 					if (roomType == -1 || roomType == -3){
 						// generate player
 						Instantiate(player, new Vector3(-12f+i*roomWidth,3f,j*roomWidth), Quaternion.Euler(new Vector3(0f,90f,0f)));
@@ -166,7 +166,7 @@ public class BuildingGen : MonoBehaviour {
 			}
 		}
 	}
-
+	
 	void GeneratePowerUp(Vector3 position){
 		int powerType;
 		float rnd = Random.Range(0f,100f);
@@ -202,7 +202,7 @@ public class BuildingGen : MonoBehaviour {
 			break;
 		}
 	}
-
+	
 	void GenerateRoomStuff(int roomType, Vector3 roomCenter){
 		if (roomType == 0){
 			// office
@@ -232,7 +232,7 @@ public class BuildingGen : MonoBehaviour {
 			}
 		}
 	}
-
+	
 	void BlockOffWall(Vector3 roomCenter, int xMultiplier, int zMultiplier, int roomType){
 		// choose to block off the door and generate a powerup or block off entire wall
 		if (Random.Range(0f,100f) <= powerupChance){
