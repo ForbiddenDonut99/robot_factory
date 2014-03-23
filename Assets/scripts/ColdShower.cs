@@ -22,7 +22,7 @@ public class ColdShower : MonoBehaviour {
 			if (transform.position == record){
 				gameObject.GetComponent<TrialPatrol>().state = "MoveToNode";
 				gameObject.GetComponent<TrialPatrol>().targetNode = gameObject.GetComponent<TrialPatrol>().lastNode;
-				Debug.Log ("No Homo, bro.");
+				//Debug.Log ("No Homo, bro.");
 			}
 			record = transform.position;
 			yield return new WaitForSeconds(0.2f);
