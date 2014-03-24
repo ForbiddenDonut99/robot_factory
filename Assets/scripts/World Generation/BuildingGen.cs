@@ -22,6 +22,7 @@ public class BuildingGen : MonoBehaviour {
 	GameObject guard;
 	
 	bool flashLightGenerated = false;
+	bool compassGenerated = false;
 	
 	// starting room
 	GameObject player;
@@ -166,6 +167,13 @@ public class BuildingGen : MonoBehaviour {
 			}
 		}
 	}
+
+	/* powerup code:
+	 * 0: wheels
+	 * 1: flashlight and zoom
+	 * 2: stungun
+	 * 3: compass
+	 */
 	
 	void GeneratePowerUp(Vector3 position){
 		int powerType;
