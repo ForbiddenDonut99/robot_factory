@@ -211,7 +211,6 @@ public class RobotController: MonoBehaviour
 
 		// zoom
 		if(lightBattery > 0.0f){
-			flashLight.enabled = true;
 			if(Input.GetMouseButton(1)){
 				playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView,largeCameraZoom,Time.deltaTime*zoomSpeed);
 			} else{

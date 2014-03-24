@@ -183,7 +183,7 @@ public class BuildingGen : MonoBehaviour {
 		if (rnd < 50){
 			powerType = 0;
 		}else{
-			if (!flashLightGenerated && rnd < 90){
+			if (!flashLightGenerated && rnd < 80){
 				powerType = 1;
 			} else if (!compassGenerated && rnd < 90){
 				powerType = 3;
