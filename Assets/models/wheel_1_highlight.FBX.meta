@@ -1,23 +1,13 @@
 fileFormatVersion: 2
-guid: e12e374ae688cb74e870188bf29f9f78
+guid: b7a2d165c82c3704dbe823735977047e
 ModelImporter:
   serializedVersion: 16
   fileIDToRecycleName:
     100000: //RootNode
-    100002: 4sidedRoom
-    100004: standardRoom
     400000: //RootNode
-    400002: 4sidedRoom
-    400004: standardRoom
     2300000: //RootNode
-    2300002: 4sidedRoom
-    2300004: standardRoom
     3300000: //RootNode
-    3300002: 4sidedRoom
-    3300004: standardRoom
-    4300000: mainRoom
-    4300002: 4sidedRoom
-    4300004: standardRoom
+    4300000: wheel_1_highlight
     9500000: //RootNode
   materials:
     importMaterials: 1
