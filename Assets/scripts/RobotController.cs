@@ -287,6 +287,7 @@ public class RobotController: MonoBehaviour
 		if(!isWin){
 			speed = 0.0f;
 			stunGunAmmo = 0;
+			compassEnabled = false;
 			isGameOver = true;
 		}
 	}
