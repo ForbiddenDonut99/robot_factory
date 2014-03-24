@@ -13,6 +13,7 @@ public class RobotController: MonoBehaviour
 	public float maxSpeed = 16.0f;
 	public float lightBattery = 0.0f;
 	public float maxBattery = 10.0f;
+	public bool compassEnabled = false;
 	public int stunGunAmmo = 0;
 	public int normalCameraZoom = 75;
 	public int largeCameraZoom = 30;
@@ -21,7 +22,10 @@ public class RobotController: MonoBehaviour
 	GUIText powerupText;
 	float powerupFadeAlpha = 0f;
 
-
+	// compass stuff
+	Texture2D compassTexture;
+	Transform goalTransform;
+	
 	// stungun stuff
 	Texture2D crosshairTexture;
 	Rect crosshairPosition;
@@ -68,6 +72,10 @@ public class RobotController: MonoBehaviour
 		flashLight = transform.GetComponentInChildren<Light>();
 		flashLight.enabled = false;
 
+		// compass variables
+		compassTexture = (Texture2D)Resources.Load("arrow");
+		goalTransform = GameObject.FindGameObjectWithTag("Finish").transform;
+		
 		// load crosshair texture from resources and set position
 		crosshairTexture = (Texture2D)Resources.Load("crosshair");
 		crosshairPosition = new Rect((Screen.width - crosshairTexture.width)/2,(Screen.height - crosshairTexture.height)/2, 
@@ -248,6 +256,22 @@ public class RobotController: MonoBehaviour
 				}
 			}
 		}
+
+		if (compassEnabled){
+			Vector2 goalDirection = new Vector3(goalTransform.position.x - transform.position.x,goalTransform.position.z - transform.position.z);
+			Vector2 forwardDirection = new Vector3(transform.forward.x,transform.forward.z);
+			float angle = Vector2.Angle(goalDirection,forwardDirection);
+			Vector3 cross = Vector3.Cross(goalDirection,forwardDirection);
+//			Debug.Log("angle: " + angle + "cross: " + cross);
+			if(cross.z < 0f){
+				angle = -angle;
+			}
+			Matrix4x4 matrixBackup = GUI.matrix;
+			GUIUtility.RotateAroundPivot(angle, new Vector2(30,30));
+			GUI.DrawTexture(new Rect(10, 10, 40, 40), compassTexture);
+			GUI.matrix = matrixBackup;
+		}
+		
 		// draw crosshair if there's ammo left
 		if(stunGunAmmo > 0){
 			GUI.DrawTexture(crosshairPosition, crosshairTexture);
@@ -291,6 +315,11 @@ public class RobotController: MonoBehaviour
 			int ammo = (int)PowerUpValue;
 			stunGunAmmo += ammo;
 			ammoText.text = "Ammo: " + stunGunAmmo;
+		} else if (PowerUpType == 3){
+			// compass
+			powerupText.text = "Compass Acquired! Target: Exit.";
+			powerupFadeAlpha = 2f;
+			compassEnabled = true;
 		}
 		powerUpCounter ++;
 	}
