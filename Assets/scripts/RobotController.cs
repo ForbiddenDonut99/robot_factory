@@ -50,6 +50,10 @@ public class RobotController: MonoBehaviour
 	public bool airControl = true;
     public float antiBumpFactor = .75f;
     public int antiBunnyHopFactor = 1;
+	public AudioClip wheelSound;
+	public AudioClip walkingSound;
+	public AudioClip gunSound;
+	public AudioClip flashlightSound;
 
 	// private variables
 
@@ -188,8 +192,10 @@ public class RobotController: MonoBehaviour
 				if(lightBattery > 0.0f){
 					flashLight.enabled = true;
 				}
+				audio.PlayOneShot (flashlightSound);
 			} else{
 				flashLight.enabled = false;
+				audio.PlayOneShot (flashlightSound);
 			}
 		}
 		// stun gun fire
@@ -206,6 +212,7 @@ public class RobotController: MonoBehaviour
 				}
 				stunGunAmmo --;
 				ammoText.text = "Ammo: " + stunGunAmmo;
+				audio.PlayOneShot (gunSound);
 			}
 		}
 
@@ -222,6 +229,19 @@ public class RobotController: MonoBehaviour
 			Color color = Color.green;
 			color.a = Mathf.Clamp01(powerupFadeAlpha);
 			powerupText.color = color;
+		}
+		if(Input.GetKeyDown(KeyCode.W)||Input.GetKeyDown(KeyCode.S)){
+			if(speed > 7.0f){
+				audio.PlayOneShot(wheelSound);
+				audio.loop = true;
+			}
+			else{
+				audio.PlayOneShot(walkingSound, 0.5f);
+				audio.loop = true;
+			}
+		}
+		if (Input.GetKeyUp (KeyCode.W) || Input.GetKeyUp (KeyCode.S)) {
+			audio.Stop ();
 		}
 	}
  
@@ -323,4 +343,5 @@ public class RobotController: MonoBehaviour
 		}
 		powerUpCounter ++;
 	}
+
 }

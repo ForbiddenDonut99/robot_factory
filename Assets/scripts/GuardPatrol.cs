@@ -6,6 +6,7 @@ public class GuardPatrol : MonoBehaviour {
 	public GameObject player;
 	public float baseSpeed = 5f;
 	public float wallBuffer = 2f;
+	public AudioClip guardSound;
 
 	// local
 	CharacterController guardController;
@@ -56,7 +57,7 @@ public class GuardPatrol : MonoBehaviour {
 	void Start () {
 		guardController = GetComponent<CharacterController>();
 		moveSpeed = baseSpeed;
-
+		audio.PlayOneShot (guardSound);
 		player = GameObject.FindGameObjectWithTag("Player");
 
 		// adjust style of text at gameover

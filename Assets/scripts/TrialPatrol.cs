@@ -11,6 +11,8 @@ public class TrialPatrol : MonoBehaviour {
 	public float nodeDistance = 25f;
 	public float baseSpeed = 5f;
 	public float baseRotation = 4.0f;
+	public AudioClip hoverSound;
+	public AudioClip alarmSound;
 	float moveSpeed;
 	float rotation;
 	CharacterController guardController;
@@ -21,7 +23,6 @@ public class TrialPatrol : MonoBehaviour {
 		rotation = baseRotation;
 		guardController = GetComponent<CharacterController>();
 		player = GameObject.FindGameObjectWithTag("Player");
-		
 		//Find an initial node to be lastNode
 		targetNode = Sense.startNode(gameObject, Sense.nearbyNodes(gameObject, nodeDistance));
 		lastNode = Sense.startNode(gameObject, Sense.nearbyNodes(gameObject, nodeDistance));
@@ -55,6 +56,7 @@ public class TrialPatrol : MonoBehaviour {
 			state = "ChasePlayer";
 			//Debug.Log ("Hunting Player!");
 			rotation = 4*baseRotation;
+
 		}
 		else rotation = baseRotation;
 		
@@ -88,16 +90,22 @@ public class TrialPatrol : MonoBehaviour {
 			break;
 			
 		case ("ChasePlayer"):
+			audio.PlayOneShot (alarmSound, 0.2f);
 			if (!Sense.player(gameObject, player)){
 				state = "FindNode";
+				audio.Stop ();
+				audio.PlayOneShot (hoverSound);
+			
+		
 				//Debug.Log ("Lost sight of Player.");
 			}
 			else{
 				if(!player.GetComponent<RobotController>().isWin){
 					// don't move if game is already won
 					guardController.Move (Vector3.Normalize(player.transform.position - transform.position)*Time.deltaTime*moveSpeed*1.5f);
+
 				}
-				
+
 				Quaternion newRotation = Quaternion.LookRotation(player.transform.position - transform.position);
 				newRotation.x = 0f;
 				newRotation.z = 0f;
@@ -114,6 +122,8 @@ public class TrialPatrol : MonoBehaviour {
 	public void stun(float time){
 		if(stunTime <= 0.0f){
 			//TODO: stun animation
+			audio.Stop ();
+			audio.PlayOneShot (hoverSound);
 			transform.rotation = Quaternion.LookRotation(-transform.up);
 			transform.position = new Vector3(transform.position.x, transform.position.y - 0.5f, transform.position.z);
 		}

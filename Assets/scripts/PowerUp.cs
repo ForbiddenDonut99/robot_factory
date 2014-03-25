@@ -9,7 +9,7 @@ public class PowerUp : MonoBehaviour {
 	*/
 	public int PowerUpType;
 	public float PowerUpValue;
-
+	public AudioClip sound;
 	// Use this for initialization
 	void Start () {
 	
@@ -23,7 +23,8 @@ public class PowerUp : MonoBehaviour {
 	void OnTriggerEnter(Collider other){
 		if(other.tag == "Player"){
 			other.transform.GetComponent<RobotController>().PowerUp(PowerUpType, PowerUpValue);
-			Destroy(gameObject);
+			audio.PlayOneShot (sound);
+			Destroy(gameObject, sound.length);
 		}
 	}
 }
