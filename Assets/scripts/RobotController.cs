@@ -91,16 +91,16 @@ public class RobotController: MonoBehaviour
 		GameObject ammoTextObj = new GameObject("ammoCounter");
 		ammoTextObj.transform.position = new Vector3(0.5f,0.5f,0f);
 		ammoText = (GUIText)ammoTextObj.AddComponent(typeof(GUIText));
-		ammoText.pixelOffset = new Vector2(-440, -260);
+		ammoText.pixelOffset = new Vector2(-Screen.width/2 + 40, -Screen.height/2 + 40);
 		ammoText.fontSize = 18;
-		ammoText.color = Color.magenta;
-		ammoText.text = "Ammo: " + stunGunAmmo;
+		ammoText.color = Color.white;
+		ammoText.text = "";
 
 		// powerup alert style
 		GameObject powerupObj = new GameObject("powerupText");
 		powerupObj.transform.position = new Vector3(0.5f,0.5f,0f);
 		powerupText = (GUIText)powerupObj.AddComponent(typeof(GUIText));
-		powerupText.pixelOffset = new Vector2(440, 260);
+		powerupText.pixelOffset = new Vector2(Screen.width/2 - 40, Screen.height/2 - 40);
 		powerupText.fontSize = 24;
 		powerupText.fontStyle = FontStyle.Bold;
 		powerupText.anchor = TextAnchor.LowerRight;
@@ -217,10 +217,12 @@ public class RobotController: MonoBehaviour
 		}
 
 		// zoom
-		if(Input.GetMouseButton(1)){
-			playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView,largeCameraZoom,Time.deltaTime*zoomSpeed);
-		} else{
-			playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView,normalCameraZoom,Time.deltaTime*zoomSpeed);
+		if(lightBattery > 0.0f){
+			if(Input.GetMouseButton(1)){
+				playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView,largeCameraZoom,Time.deltaTime*zoomSpeed);
+			} else{
+				playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView,normalCameraZoom,Time.deltaTime*zoomSpeed);
+			}
 		}
 
 		//powerup pickup alert fade
@@ -305,6 +307,7 @@ public class RobotController: MonoBehaviour
 		if(!isWin){
 			speed = 0.0f;
 			stunGunAmmo = 0;
+			compassEnabled = false;
 			isGameOver = true;
 		}
 	}
@@ -321,7 +324,7 @@ public class RobotController: MonoBehaviour
 			}
 		} else if (PowerUpType == 1){
 			// flashlight
-			powerupText.text = "Flashlight! Press [F] to use.";
+			powerupText.text = "Flashlight! Press [F] to use. You can also zoom now with right click.";
 			powerupFadeAlpha = 2f;
 			if (lightBattery + PowerUpValue > maxBattery){
 				lightBattery = maxBattery;

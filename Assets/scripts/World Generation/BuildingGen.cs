@@ -19,6 +19,7 @@ public class BuildingGen : MonoBehaviour {
 	GameObject powerupWheels;
 	GameObject powerupFlashlight;
 	GameObject powerupStungun;
+	GameObject powerupCompass;
 	GameObject guard;
 	
 	bool flashLightGenerated = false;
@@ -49,6 +50,7 @@ public class BuildingGen : MonoBehaviour {
 		powerupWheels = (GameObject)Resources.Load("Powerup-Wheels");
 		powerupFlashlight = (GameObject)Resources.Load("Powerup-Flashlight");
 		powerupStungun = (GameObject)Resources.Load("Powerup-Stungun");
+		powerupCompass = (GameObject)Resources.Load("Powerup-Compass");
 		guard = (GameObject)Resources.Load("Guard");
 		
 		player = (GameObject)Resources.Load("PlayerRobot");
@@ -180,12 +182,12 @@ public class BuildingGen : MonoBehaviour {
 		float rnd = Random.Range(0f,100f);
 		if (rnd < 50){
 			powerType = 0;
-		} else if (rnd < 60){
-			powerType = 1;
-		} else{
-			if (!flashLightGenerated && rnd < 90){
+		}else{
+			if (!flashLightGenerated && rnd < 80){
 				powerType = 1;
-			} else {
+			} else if (!compassGenerated && rnd < 90){
+				powerType = 3;
+			} else{
 				powerType = 2;
 			}
 		}
@@ -198,9 +200,9 @@ public class BuildingGen : MonoBehaviour {
 			powerup.GetComponent<PowerUp>().PowerUpValue = (float)Random.Range(2,5);
 			break;
 		case 1:
+			flashLightGenerated = true;
 			powerup = (GameObject)Instantiate(powerupFlashlight, new Vector3(position.x, position.y + 0.15f, position.z), Quaternion.identity);
 			powerup.GetComponent<PowerUp>().PowerUpType = powerType;
-			flashLightGenerated = true;
 			powerup.GetComponent<PowerUp>().PowerUpValue = 1f;
 			break;
 		case 2:
@@ -208,9 +210,15 @@ public class BuildingGen : MonoBehaviour {
 			powerup.GetComponent<PowerUp>().PowerUpType = powerType;
 			powerup.GetComponent<PowerUp>().PowerUpValue = (float)Random.Range(1,4);
 			break;
+		case 3:
+			compassGenerated = true;
+			powerup = (GameObject)Instantiate(powerupCompass, new Vector3(position.x, position.y + 0.15f, position.z), Quaternion.Euler(new Vector3(-90f,0f,0f)));
+			powerup.GetComponent<PowerUp>().PowerUpType = powerType;
+			powerup.GetComponent<PowerUp>().PowerUpValue = 1f;
+			break;
 		}
 	}
-	
+
 	void GenerateRoomStuff(int roomType, Vector3 roomCenter){
 		if (roomType == 0){
 			// office
