@@ -288,7 +288,7 @@ public class BuildingGen : MonoBehaviour {
 						if (Random.Range(0f,100f) <= furnitureChance){
 							switch(interiorType){
 								case 0:{
-									if (Random.Range(0f,100f) <= 90f){
+									if (Random.Range(0f,100f) <= 80f){
 										Instantiate(cubiclePreFab, new Vector3(x,relY,z), Quaternion.Euler(new Vector3(270f, rotation, 0)));
 									} else{
 										Instantiate(shelfPreFab, new Vector3(x,relY,z), Quaternion.Euler(new Vector3(270f, rotation, 0)));
