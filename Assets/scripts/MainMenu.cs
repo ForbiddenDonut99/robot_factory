@@ -9,6 +9,11 @@ public class MainMenu : MonoBehaviour {
 	public Material whiteText;
 	public Material yellowText;
 	public Material orangeText;
+
+	void Start () {
+		Screen.lockCursor = false;
+		Screen.showCursor = true;
+	}
 	
 	void Update () {
 		// reset color

@@ -196,8 +196,10 @@ public class RobotController: MonoBehaviour
 	void Update(){
 		// flashlight switch
 		if (Input.GetKeyDown(KeyCode.F)){
-			flashLight.enabled = !flashLight.enabled;
-			audio.PlayOneShot (flashlightSound);
+			if(scopeEnabled){
+				flashLight.enabled = !flashLight.enabled;
+				audio.PlayOneShot (flashlightSound);
+			}
 		}
 
 		// stun gun fire
@@ -314,7 +316,6 @@ public class RobotController: MonoBehaviour
 		int PowerUpType = thePowerup.GetComponent<PowerUp>().PowerUpType;
 		float PowerUpValue = thePowerup.GetComponent<PowerUp>().PowerUpValue;
 		buildingGenerator.removePowerup(thePowerup);
-		Destroy(thePowerup);
 		if (PowerUpType == PowerUp.POWERUPTYPEWHEEL){
 			// wheels
 			powerupText.text = "WHEELS INITIALIZED. SPEED AMPLIFIED.";
@@ -325,10 +326,6 @@ public class RobotController: MonoBehaviour
 			} else{
 				speed += PowerUpValue;
 			}
-		} else if (PowerUpType == 5){
-			// TODO: re-add flashlight
-			powerupText.text = "FRONTAL LIGHT INITIALIZED. ENABLED WITH 'F'";
-			powerupFadeAlpha = 2f;
 		} else if (PowerUpType == PowerUp.POWERUPTYPESTUNGUN){
 			// stun gun
 			powerupText.text = "STUN WEAPON INITIALIZED. AMMUNITION INCREASED.";
@@ -338,7 +335,7 @@ public class RobotController: MonoBehaviour
 			ammoText.text = "Ammo: " + stunGunAmmo;
 		} else if (PowerUpType == PowerUp.POWERUPTYPESCOPE){
 			// flashlight
-			powerupText.text = "Scope! Zoom in with right click.";
+			powerupText.text = "FRONTAL LIGHT/SCOPE INITIALIZED. ENABLED WITH 'F'/'RIGHT CLICK'";
 			powerupFadeAlpha = 2f;
 			scopeEnabled = true;
 			buildingGenerator.PowerUpSwap(PowerUpType);
@@ -350,7 +347,7 @@ public class RobotController: MonoBehaviour
 			buildingGenerator.PowerUpSwap(PowerUpType);
 		} else if (PowerUpType == PowerUp.POWERUPTYPESPRING){
 			// super jump
-			powerupText.text = "Spring! Jump Higher!";
+			powerupText.text = "SPRING ENHANCED! JUMP HEIGHT INCREASED.";
 			powerupFadeAlpha = 2f;
 			if (jumpSpeed + 3f >= maxJumpSpeed){
 				jumpSpeed = maxJumpSpeed;

@@ -79,11 +79,11 @@ public class BuildingGen : MonoBehaviour {
 		availablePowerUpTypes.Add(PowerUp.POWERUPTYPESTUNGUN);
 		availablePowerUpTypes.Add(PowerUp.POWERUPTYPEWHEEL);
 
-		powerupTypeChance[PowerUp.POWERUPTYPECOMPASS] = 2f;
+		powerupTypeChance[PowerUp.POWERUPTYPECOMPASS] = 1f;
 		powerupTypeChance[PowerUp.POWERUPTYPESCOPE] = 1f;
-		powerupTypeChance[PowerUp.POWERUPTYPESPRING] = 2f;
-		powerupTypeChance[PowerUp.POWERUPTYPESTUNGUN] = 2f;
-		powerupTypeChance[PowerUp.POWERUPTYPEWHEEL] = 3f;
+		powerupTypeChance[PowerUp.POWERUPTYPESPRING] = 1f;
+		powerupTypeChance[PowerUp.POWERUPTYPESTUNGUN] = 1f;
+		powerupTypeChance[PowerUp.POWERUPTYPEWHEEL] = 1f;
 
 		// mark places to generate a room as 1
 		int[,] roomTypeArray = new int[4,4];
