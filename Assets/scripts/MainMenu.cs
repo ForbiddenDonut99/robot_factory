@@ -32,6 +32,8 @@ public class MainMenu : MonoBehaviour {
 					if(option == StartGame){
 						StartGame.renderer.material = orangeText;
 						Application.LoadLevel("GameScene");
+						GameObject music = GameObject.FindGameObjectWithTag("Music");
+						Destroy(music);
 					} else if(option == Options){
 						Options.renderer.material = yellowText;
 						Application.LoadLevel("OptionsMenu");

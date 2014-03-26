@@ -90,11 +90,11 @@ public class TrialPatrol : MonoBehaviour {
 			break;
 			
 		case ("ChasePlayer"):
-			audio.PlayOneShot (alarmSound, 0.2f);
+			audio.PlayOneShot (alarmSound, OptionsMenu.sfx*0.2f);
 			if (!Sense.player(gameObject, player)){
 				state = "FindNode";
 				audio.Stop ();
-				audio.PlayOneShot (hoverSound);
+				audio.PlayOneShot (hoverSound, OptionsMenu.sfx);
 			
 		
 				//Debug.Log ("Lost sight of Player.");
@@ -123,7 +123,7 @@ public class TrialPatrol : MonoBehaviour {
 		if(stunTime <= 0.0f){
 			//TODO: stun animation
 			audio.Stop ();
-			audio.PlayOneShot (hoverSound);
+			audio.PlayOneShot (hoverSound, OptionsMenu.sfx);
 			transform.rotation = Quaternion.LookRotation(-transform.up);
 			transform.position = new Vector3(transform.position.x, transform.position.y - 0.5f, transform.position.z);
 		}

@@ -30,7 +30,7 @@ public class PowerUp : MonoBehaviour {
 
 	void OnTriggerEnter(Collider other){
 		if(other.tag == "Player"){
-			audio.PlayOneShot (sound);
+			audio.PlayOneShot (sound, OptionsMenu.sfx);
 			Destroy(gameObject, sound.length);
 			other.transform.GetComponent<RobotController>().GetPowerUp(gameObject);
 		}
