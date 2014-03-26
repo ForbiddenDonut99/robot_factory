@@ -269,7 +269,7 @@ public class RobotController: MonoBehaviour
 					gameOvertxt = "Escapee secured. Threat minimal. Response: Disassembly.";
 				} else if(powerUpCounter == 1){
 					gameOvertxt = "Escapee secured. Threat mild. Response: Disconnection.";
-				} else if(powerUpCounter == 2){
+				} else if(powerUpCounter == 3){
 					gameOvertxt = "Escapee secured. Threat high. Response: Termination.";
 				} else{
 					gameOvertxt = "Escapee secured. Threat maximum. Response: Annihiliation.";
@@ -347,7 +347,7 @@ public class RobotController: MonoBehaviour
 			buildingGenerator.PowerUpSwap(PowerUpType);
 		} else if (PowerUpType == PowerUp.POWERUPTYPESPRING){
 			// super jump
-			powerupText.text = "SPRING ENHANCED! JUMP HEIGHT INCREASED.";
+			powerupText.text = "SPRING ENHANCED. JUMP HEIGHT INCREASED.";
 			powerupFadeAlpha = 2f;
 			if (jumpSpeed + 3f >= maxJumpSpeed){
 				jumpSpeed = maxJumpSpeed;
