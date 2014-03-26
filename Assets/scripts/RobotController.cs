@@ -51,9 +51,9 @@ public class RobotController: MonoBehaviour
     public float antiBumpFactor = .75f;
     public int antiBunnyHopFactor = 1;
 	public AudioClip wheelSound;
-	public AudioClip walkingSound;
 	public AudioClip gunSound;
 	public AudioClip flashlightSound;
+	public Font bitWiseFont;
 
 	// private variables
 
@@ -92,6 +92,7 @@ public class RobotController: MonoBehaviour
 		ammoTextObj.transform.position = new Vector3(0.5f,0.5f,0f);
 		ammoText = (GUIText)ammoTextObj.AddComponent(typeof(GUIText));
 		ammoText.pixelOffset = new Vector2(-Screen.width/2 + 40, -Screen.height/2 + 40);
+		ammoText.font = bitWiseFont;
 		ammoText.fontSize = 18;
 		ammoText.color = Color.white;
 		ammoText.text = "";
@@ -99,17 +100,19 @@ public class RobotController: MonoBehaviour
 		// powerup alert style
 		GameObject powerupObj = new GameObject("powerupText");
 		powerupObj.transform.position = new Vector3(0.5f,0.5f,0f);
+		Color color = Color.yellow;
 		powerupText = (GUIText)powerupObj.AddComponent(typeof(GUIText));
 		powerupText.pixelOffset = new Vector2(Screen.width/2 - 40, Screen.height/2 - 40);
+		powerupText.font = bitWiseFont;
 		powerupText.fontSize = 24;
-		powerupText.fontStyle = FontStyle.Bold;
+		//powerupText.fontStyle = FontStyle.Bold;
 		powerupText.anchor = TextAnchor.LowerRight;
-		Color color = Color.green;
 		color.a = powerupFadeAlpha;
-		powerupText.color = color;
+		powerupText.color = Color.yellow;
 		powerupText.text = "";
 
 		// gameover text style
+		endTextStyle.font = bitWiseFont;
 		endTextStyle.normal.textColor = Color.white;
 		endTextStyle.fontSize = 24;
 		endTextStyle.alignment = TextAnchor.MiddleCenter;
@@ -211,7 +214,7 @@ public class RobotController: MonoBehaviour
 					} 
 				}
 				stunGunAmmo --;
-				ammoText.text = "Ammo: " + stunGunAmmo;
+				ammoText.text = "AMMO: " + stunGunAmmo;
 				audio.PlayOneShot (gunSound);
 			}
 		}
@@ -238,8 +241,6 @@ public class RobotController: MonoBehaviour
 				audio.loop = true;
 			}
 			else{
-				audio.PlayOneShot(walkingSound, 0.5f);
-				audio.loop = true;
 			}
 		}
 		if (Input.GetKeyUp (KeyCode.W) || Input.GetKeyUp (KeyCode.S)) {
@@ -260,16 +261,17 @@ public class RobotController: MonoBehaviour
 			GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), fadeTexture);
 			
 			if(alpha >= 1.0f){
-				GUI.color = Color.white;
+
+				GUI.color = Color.red;
 				string gameOvertxt = "";
 				if(powerUpCounter == 0){
-					gameOvertxt = "\"What a piece of junk.\"";
+					gameOvertxt = "Escapee secured. Threat minimal. Response: Disassembly.";
 				} else if(powerUpCounter == 1){
-					gameOvertxt = "\"Now how did this thing walk off on its own?\"";
+					gameOvertxt = "Escapee secured. Threat mild. Response: Disconnection.";
 				} else if(powerUpCounter == 2){
-					gameOvertxt = "\"Finally! When did robots get so hard to catch?\"";
+					gameOvertxt = "Escapee secured. Threat high. Response: Termination.";
 				} else{
-					gameOvertxt = "\"Whew! I think I've stopped a robot rebellion here!\"";
+					gameOvertxt = "Escapee secured. Threat maximum. Response: Annihiliation.";
 				}
 				GUI.Label(new Rect(Screen.width/2-50f, Screen.height/2-25f, 100f, 50f), gameOvertxt, endTextStyle);
 				restartCountDown -= Time.deltaTime;
@@ -315,7 +317,7 @@ public class RobotController: MonoBehaviour
 	public void PowerUp(int PowerUpType, float PowerUpValue){
 		if (PowerUpType == 0){
 			// wheels
-			powerupText.text = "Wheels! Speed Up!";
+			powerupText.text = "WHEELS INITIALIZED. SPEED AMPLIFIED.";
 			powerupFadeAlpha = 2f;
 			if (speed + PowerUpValue > maxSpeed){
 				speed = maxSpeed;
@@ -324,7 +326,7 @@ public class RobotController: MonoBehaviour
 			}
 		} else if (PowerUpType == 1){
 			// flashlight
-			powerupText.text = "Flashlight! Press [F] to use. You can also zoom now with right click.";
+			powerupText.text = "FRONTAL LIGHT INITIALIZED. ENABLED WITH 'F'";
 			powerupFadeAlpha = 2f;
 			if (lightBattery + PowerUpValue > maxBattery){
 				lightBattery = maxBattery;
@@ -333,14 +335,14 @@ public class RobotController: MonoBehaviour
 			}
 		} else if (PowerUpType == 2){
 			// stun gun
-			powerupText.text = "Stun Gun! Ammo Up!";
+			powerupText.text = "STUN WEAPON INITIALIZED. AMMUNITION INCREASED.";
 			powerupFadeAlpha = 2f;
 			int ammo = (int)PowerUpValue;
 			stunGunAmmo += ammo;
 			ammoText.text = "Ammo: " + stunGunAmmo;
 		} else if (PowerUpType == 3){
 			// compass
-			powerupText.text = "Compass Acquired! Target: Exit.";
+			powerupText.text = "DIRECTIONAL COMPASS ACTIVATED. TARGET: ESCAPE ROUTE.";
 			powerupFadeAlpha = 2f;
 			compassEnabled = true;
 		}
