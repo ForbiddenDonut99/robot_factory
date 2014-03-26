@@ -1,27 +1,13 @@
 fileFormatVersion: 2
-guid: 1c1454a4398faaa4e9cd806c0f5f9ab9
+guid: 229e0baeb4f51ef4481ae7f344ccfe91
 ModelImporter:
   serializedVersion: 16
   fileIDToRecycleName:
     100000: //RootNode
-    100002: chain_1
-    100004: cubicle_1
-    100006: machine_1
     400000: //RootNode
-    400002: chain_1
-    400004: cubicle_1
-    400006: machine_1
     2300000: //RootNode
-    2300002: chain_1
-    2300004: cubicle_1
-    2300006: machine_1
     3300000: //RootNode
-    3300002: chain_1
-    3300004: cubicle_1
-    3300006: machine_1
-    4300000: machine_1
-    4300002: cubicle_1
-    4300004: chain_1
+    4300000: elevator_1
     9500000: //RootNode
   materials:
     importMaterials: 1
