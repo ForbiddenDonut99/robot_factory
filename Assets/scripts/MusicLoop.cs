@@ -3,10 +3,13 @@ using System.Collections;
 
 public class MusicLoop : MonoBehaviour {
 
-	public AudioClip music;
-
 	void Start () {
 		audio.loop = true;
-		audio.PlayOneShot(music, OptionsMenu.sfx);
+		audio.volume = OptionsMenu.sfx;
+		audio.Play();
+	}
+
+	void Update(){
+		audio.volume = OptionsMenu.sfx;
 	}
 }
