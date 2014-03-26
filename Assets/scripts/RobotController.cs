@@ -9,10 +9,9 @@ public class RobotController: MonoBehaviour
 
 	// powerups
 	public int powerUpCounter = 0;  // for endgame score
-	public float speed = 4.0f;
-	public float maxSpeed = 16.0f;
-	public float lightBattery = 0.0f;
-	public float maxBattery = 10.0f;
+	public float speed = 7.0f;
+	public float maxSpeed = 14.0f;
+	public bool scopeEnabled = false;
 	public bool compassEnabled = false;
 	public int stunGunAmmo = 0;
 	public int normalCameraZoom = 75;
@@ -21,6 +20,9 @@ public class RobotController: MonoBehaviour
 	Light flashLight;
 	GUIText powerupText;
 	float powerupFadeAlpha = 0f;
+
+	// to swap powerups
+	BuildingGen buildingGenerator;
 
 	// compass stuff
 	Texture2D compassTexture;
@@ -42,8 +44,9 @@ public class RobotController: MonoBehaviour
 
 	// others
 
-    public float jumpSpeed = 4.0f;
-    public float gravity = 10.0f; 
+	public float jumpSpeed = 6.0f;
+	public float maxJumpSpeed = 12.0f;
+	public float gravity = 10.0f; 
     public bool slideWhenOverSlopeLimit = false;
 	public bool slideOnTaggedObjects = false;
     public float slideSpeed = 5.0f;
@@ -68,6 +71,8 @@ public class RobotController: MonoBehaviour
  
     void Start()
 	{
+		buildingGenerator = GameObject.Find("Generator").GetComponent<BuildingGen>();
+
 		// set up powerups
 		flashLight = transform.GetComponentInChildren<Light>();
 		flashLight.enabled = false;
@@ -184,14 +189,9 @@ public class RobotController: MonoBehaviour
 	void Update(){
 		// flashlight switch
 		if (Input.GetKeyDown(KeyCode.F)){
-			if(flashLight.enabled == false){
-				if(lightBattery > 0.0f){
-					flashLight.enabled = true;
-				}
-			} else{
-				flashLight.enabled = false;
-			}
+			flashLight.enabled = !flashLight.enabled;
 		}
+
 		// stun gun fire
 		if(Input.GetMouseButtonDown(0)){
 			if(stunGunAmmo > 0){
@@ -210,7 +210,7 @@ public class RobotController: MonoBehaviour
 		}
 
 		// zoom
-		if(lightBattery > 0.0f){
+		if(scopeEnabled){
 			if(Input.GetMouseButton(1)){
 				playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView,largeCameraZoom,Time.deltaTime*zoomSpeed);
 			} else{
@@ -278,9 +278,6 @@ public class RobotController: MonoBehaviour
 		if(stunGunAmmo > 0){
 			GUI.DrawTexture(crosshairPosition, crosshairTexture);
 		}
-
-//		// show flashlight battery
-//		GUI.Box(new Rect(10, 10, Screen.width/2, 20), lightBattery + "/" + maxBattery);
 	}
 
 	public void GameOver(){
@@ -292,37 +289,50 @@ public class RobotController: MonoBehaviour
 		}
 	}
 	
-	public void PowerUp(int PowerUpType, float PowerUpValue){
-		if (PowerUpType == 0){
+	public void GetPowerUp(GameObject thePowerup){
+		int PowerUpType = thePowerup.GetComponent<PowerUp>().PowerUpType;
+		float PowerUpValue = thePowerup.GetComponent<PowerUp>().PowerUpValue;
+		buildingGenerator.removePowerup(thePowerup);
+		Destroy(thePowerup);
+		if (PowerUpType == PowerUp.POWERUPTYPEWHEEL){
 			// wheels
 			powerupText.text = "Wheels! Speed Up!";
 			powerupFadeAlpha = 2f;
-			if (speed + PowerUpValue > maxSpeed){
+			if (speed + PowerUpValue >= maxSpeed){
 				speed = maxSpeed;
+				buildingGenerator.GetComponent<BuildingGen>().PowerUpSwap(PowerUpType);
 			} else{
 				speed += PowerUpValue;
 			}
-		} else if (PowerUpType == 1){
-			// flashlight
-			powerupText.text = "Flashlight! Press [F] to use. You can also zoom now with right click.";
-			powerupFadeAlpha = 2f;
-			if (lightBattery + PowerUpValue > maxBattery){
-				lightBattery = maxBattery;
-			} else{
-				lightBattery += PowerUpValue;
-			}
-		} else if (PowerUpType == 2){
+		} else if (PowerUpType == PowerUp.POWERUPTYPESTUNGUN){
 			// stun gun
 			powerupText.text = "Stun Gun! Ammo Up!";
 			powerupFadeAlpha = 2f;
 			int ammo = (int)PowerUpValue;
 			stunGunAmmo += ammo;
 			ammoText.text = "Ammo: " + stunGunAmmo;
-		} else if (PowerUpType == 3){
+		} else if (PowerUpType == PowerUp.POWERUPTYPESCOPE){
+			// flashlight
+			powerupText.text = "Scope! Zoom in with right click.";
+			powerupFadeAlpha = 2f;
+			scopeEnabled = true;
+			buildingGenerator.PowerUpSwap(PowerUpType);
+		} else if (PowerUpType == PowerUp.POWERUPTYPECOMPASS){
 			// compass
-			powerupText.text = "Compass Acquired! Target: Exit.";
+			powerupText.text = "Compass! Target: Exit.";
 			powerupFadeAlpha = 2f;
 			compassEnabled = true;
+			buildingGenerator.PowerUpSwap(PowerUpType);
+		} else if (PowerUpType == PowerUp.POWERUPTYPESPRING){
+			// super jump
+			powerupText.text = "Spring! Jump Higher!";
+			powerupFadeAlpha = 2f;
+			if (jumpSpeed + 3f >= maxJumpSpeed){
+				jumpSpeed = maxJumpSpeed;
+				buildingGenerator.PowerUpSwap(PowerUpType);
+			} else{
+				jumpSpeed += 3f;
+			}
 		}
 		powerUpCounter ++;
 	}

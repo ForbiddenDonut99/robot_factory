@@ -10,6 +10,13 @@ public class PowerUp : MonoBehaviour {
 	public int PowerUpType;
 	public float PowerUpValue;
 
+	public const int POWERUPTYPEWHEEL = 0;
+	public const int POWERUPTYPESTUNGUN = 1;
+	public const int POWERUPTYPESCOPE = 2;
+	public const int POWERUPTYPECOMPASS = 3;
+	public const int POWERUPTYPESPRING = 4;
+
+
 	// Use this for initialization
 	void Start () {
 	
@@ -22,8 +29,7 @@ public class PowerUp : MonoBehaviour {
 
 	void OnTriggerEnter(Collider other){
 		if(other.tag == "Player"){
-			other.transform.GetComponent<RobotController>().PowerUp(PowerUpType, PowerUpValue);
-			Destroy(gameObject);
+			other.transform.GetComponent<RobotController>().GetPowerUp(gameObject);
 		}
 	}
 }
