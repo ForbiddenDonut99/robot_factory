@@ -47,8 +47,8 @@ public class BuildingGen : MonoBehaviour {
 	GameObject machinePreFab;
 	GameObject shelfPreFab;
 	GameObject node;
-	public float furnitureChance = 28.57f;
-	public float machineRoomChance = 30f;
+	public float furnitureChance = 45f;
+	public float machineRoomChance = 10f;
 	
 	// Use this for initialization
 	void Start () {
@@ -288,7 +288,7 @@ public class BuildingGen : MonoBehaviour {
 						if (Random.Range(0f,100f) <= furnitureChance){
 							switch(interiorType){
 								case 0:{
-									if (Random.Range(0f,100f) <= 70f){
+									if (Random.Range(0f,100f) <= 90f){
 										Instantiate(cubiclePreFab, new Vector3(x,relY,z), Quaternion.Euler(new Vector3(270f, rotation, 0)));
 									} else{
 										Instantiate(shelfPreFab, new Vector3(x,relY,z), Quaternion.Euler(new Vector3(270f, rotation, 0)));
