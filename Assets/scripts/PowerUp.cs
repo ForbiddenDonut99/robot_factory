@@ -33,6 +33,7 @@ public class PowerUp : MonoBehaviour {
 			audio.PlayOneShot (sound, OptionsMenu.sfx);
 			Destroy(gameObject, sound.length);
 			other.transform.GetComponent<RobotController>().GetPowerUp(gameObject);
+			PowerUpValue = 0;
 		}
 	}
 }
