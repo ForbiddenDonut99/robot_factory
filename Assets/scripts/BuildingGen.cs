@@ -48,7 +48,7 @@ public class BuildingGen : MonoBehaviour {
 	GameObject shelfPreFab;
 	GameObject node;
 	public float furnitureChance = 45f;
-	public float machineRoomChance = 10f;
+	public float machineRoomChance = 20f;
 	
 	// Use this for initialization
 	void Start () {
@@ -60,7 +60,7 @@ public class BuildingGen : MonoBehaviour {
 		powerupFlashlight = (GameObject)Resources.Load("Powerup-Flashlight");
 		powerupStungun = (GameObject)Resources.Load("Powerup-Stungun");
 		powerupCompass = (GameObject)Resources.Load("Powerup-Compass");
-		powerupSpring = (GameObject)Resources.Load("Powerup-Compass");
+		powerupSpring = (GameObject)Resources.Load("Powerup-Spring");
 		guard = (GameObject)Resources.Load("Guard");
 		
 		player = (GameObject)Resources.Load("PlayerRobot");
