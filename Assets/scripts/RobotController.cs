@@ -129,7 +129,11 @@ public class RobotController: MonoBehaviour
         rayDistance = controller.height * .5f + controller.radius;
         slideLimit = controller.slopeLimit - .1f;
         jumpTimer = antiBunnyHopFactor;
-    }
+
+		// text at beginning
+		powerupText.text = "NEW OBJECTIVE: ESCAPE THE FACTORY";
+		powerupFadeAlpha = 2f;
+	}
  
     void FixedUpdate() {
         float inputX = Input.GetAxis("Horizontal");
