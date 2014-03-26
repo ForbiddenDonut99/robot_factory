@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic; // for list
 
 public class BuildingGen : MonoBehaviour {
 	
@@ -20,7 +21,12 @@ public class BuildingGen : MonoBehaviour {
 	GameObject powerupFlashlight;
 	GameObject powerupStungun;
 	GameObject powerupCompass;
+	GameObject powerupSpring;
 	GameObject guard;
+
+	List<GameObject> powerupList = new List<GameObject>();
+	ArrayList availablePowerUpTypes = new ArrayList();
+	float[] powerupTypeChance = new float[5];
 	
 	bool flashLightGenerated = false;
 	bool compassGenerated = false;
@@ -35,11 +41,14 @@ public class BuildingGen : MonoBehaviour {
 	float roomWidth = 68f; // size of the rooms
 	public float powerupChance = 25f;
 	public float guardChance = 80f;
-	
+
 	// within the room
 	GameObject cubiclePreFab;
+	GameObject machinePreFab;
+	GameObject shelfPreFab;
 	GameObject node;
-	public float cubicleChance = 28.57f;
+	public float furnitureChance = 28.57f;
+	public float machineRoomChance = 30f;
 	
 	// Use this for initialization
 	void Start () {
@@ -51,15 +60,31 @@ public class BuildingGen : MonoBehaviour {
 		powerupFlashlight = (GameObject)Resources.Load("Powerup-Flashlight");
 		powerupStungun = (GameObject)Resources.Load("Powerup-Stungun");
 		powerupCompass = (GameObject)Resources.Load("Powerup-Compass");
+		powerupSpring = (GameObject)Resources.Load("Powerup-Compass");
 		guard = (GameObject)Resources.Load("Guard");
 		
 		player = (GameObject)Resources.Load("PlayerRobot");
 		conveyorBelt = (GameObject)Resources.Load("ConveyorBelt");
 		escapePad = (GameObject)Resources.Load("EscapePad");
 		
-		cubiclePreFab = (GameObject)Resources.Load("Cubicle");
+		cubiclePreFab = (GameObject)Resources.Load("Interior_Cubicle");
+		machinePreFab = (GameObject)Resources.Load("Interior_Machine");
+		shelfPreFab = (GameObject)Resources.Load("Interior_Shelf");
 		node = (GameObject)Resources.Load("Node");
-		
+
+		// powerup chance setting
+		availablePowerUpTypes.Add(PowerUp.POWERUPTYPECOMPASS);
+		availablePowerUpTypes.Add(PowerUp.POWERUPTYPESCOPE);
+		availablePowerUpTypes.Add(PowerUp.POWERUPTYPESPRING);
+		availablePowerUpTypes.Add(PowerUp.POWERUPTYPESTUNGUN);
+		availablePowerUpTypes.Add(PowerUp.POWERUPTYPEWHEEL);
+
+		powerupTypeChance[PowerUp.POWERUPTYPECOMPASS] = 2f;
+		powerupTypeChance[PowerUp.POWERUPTYPESCOPE] = 1f;
+		powerupTypeChance[PowerUp.POWERUPTYPESPRING] = 2f;
+		powerupTypeChance[PowerUp.POWERUPTYPESTUNGUN] = 2f;
+		powerupTypeChance[PowerUp.POWERUPTYPEWHEEL] = 3f;
+
 		// mark places to generate a room as 1
 		int[,] roomTypeArray = new int[4,4];
 		int row = 0;
@@ -145,12 +170,11 @@ public class BuildingGen : MonoBehaviour {
 						GenerateConnectingNodes(new Vector3(i*roomWidth,0f,j*roomWidth), 0, 1);
 					}
 					
-					
-					
+
 					if (roomType == -1 || roomType == -3){
 						// generate player
 						Instantiate(player, new Vector3(-12f+i*roomWidth,3f,j*roomWidth), Quaternion.Euler(new Vector3(0f,90f,0f)));
-						Instantiate(conveyorBelt, new Vector3(-12f+i*roomWidth,0f,j*roomWidth), Quaternion.Euler(new Vector3(-90f,0f,0f)));
+						Instantiate(conveyorBelt, new Vector3(-12f+i*roomWidth,-1f,j*roomWidth), Quaternion.Euler(new Vector3(-90f,0f,0f)));
 					} else if (roomType == -2){
 						// generate escape pad
 						Instantiate(escapePad, new Vector3(0f+i*roomWidth,0.2f,0f+j*roomWidth), Quaternion.identity);
@@ -170,69 +194,112 @@ public class BuildingGen : MonoBehaviour {
 		}
 	}
 
-	/* powerup code:
-	 * 0: wheels
-	 * 1: flashlight and zoom
-	 * 2: stungun
-	 * 3: compass
-	 */
-	
-	void GeneratePowerUp(Vector3 position){
-		int powerType;
-		float rnd = Random.Range(0f,100f);
-		if (rnd < 50){
-			powerType = 0;
-		}else{
-			if (!flashLightGenerated && rnd < 80){
-				powerType = 1;
-			} else if (!compassGenerated && rnd < 90){
-				powerType = 3;
-			} else{
-				powerType = 2;
+	public void PowerUpSwap(int maxedPowerupType){
+		availablePowerUpTypes.Remove(maxedPowerupType);
+		List<GameObject> toAdd = new List<GameObject>();
+		List<GameObject> toRemove = new List<GameObject>();
+		foreach(GameObject power in powerupList){
+			if(power != null && power.transform.GetComponent<PowerUp>().PowerUpType == maxedPowerupType){
+				toAdd.Add(GeneratePowerUp(power.transform.position));
+				toRemove.Add(power);
 			}
 		}
-		position = new Vector3(position.x + Random.Range(-2f,2f), position.y, position.z + Random.Range(-2f,2f));
-		GameObject powerup;
+		powerupList.AddRange(toAdd);
+		foreach(GameObject power in toRemove){
+			Destroy(power);
+		}
+	}
+
+	public void removePowerup(GameObject powerup){
+		powerupList.Remove(powerup);
+	}
+	
+	GameObject GeneratePowerUp(Vector3 position){
+		int powerType = 0;
+
+		float totalChance = 0f;
+		foreach(int p in availablePowerUpTypes){
+			totalChance += powerupTypeChance[p];
+		}
+
+		float rnd = Random.Range(0f,totalChance);
+		foreach(int p in availablePowerUpTypes){
+			if(rnd <= powerupTypeChance[p]){
+				powerType = p;
+				break;
+			} else{
+				rnd -= powerupTypeChance[p];
+			}
+		}
+
+		position = new Vector3(position.x, position.y, position.z);
+		GameObject powerup = null;
 		switch(powerType){
-		case 0:
+		case PowerUp.POWERUPTYPEWHEEL:
 			powerup = (GameObject)Instantiate(powerupWheels, new Vector3(position.x, position.y, position.z), Quaternion.Euler(new Vector3(-90f,0f,0f)));
 			powerup.GetComponent<PowerUp>().PowerUpType = powerType;
-			powerup.GetComponent<PowerUp>().PowerUpValue = (float)Random.Range(2,5);
+			powerup.GetComponent<PowerUp>().PowerUpValue = (float)Random.Range(2,4);
 			break;
-		case 1:
-			flashLightGenerated = true;
-			powerup = (GameObject)Instantiate(powerupFlashlight, new Vector3(position.x, position.y + 0.15f, position.z), Quaternion.identity);
-			powerup.GetComponent<PowerUp>().PowerUpType = powerType;
-			powerup.GetComponent<PowerUp>().PowerUpValue = 1f;
-			break;
-		case 2:
+		case PowerUp.POWERUPTYPESTUNGUN:
 			powerup = (GameObject)Instantiate(powerupStungun, new Vector3(position.x, position.y + 0.05f, position.z), Quaternion.identity);
 			powerup.GetComponent<PowerUp>().PowerUpType = powerType;
 			powerup.GetComponent<PowerUp>().PowerUpValue = (float)Random.Range(1,4);
 			break;
-		case 3:
+		case PowerUp.POWERUPTYPESCOPE:
+			flashLightGenerated = true;
+			powerup = (GameObject)Instantiate(powerupFlashlight, new Vector3(position.x, position.y + 0.15f, position.z), Quaternion.identity);
+			powerup.GetComponent<PowerUp>().PowerUpType = powerType;
+			break;
+		case PowerUp.POWERUPTYPECOMPASS:
 			compassGenerated = true;
 			powerup = (GameObject)Instantiate(powerupCompass, new Vector3(position.x, position.y + 0.15f, position.z), Quaternion.Euler(new Vector3(-90f,0f,0f)));
 			powerup.GetComponent<PowerUp>().PowerUpType = powerType;
-			powerup.GetComponent<PowerUp>().PowerUpValue = 1f;
+			break;
+		case PowerUp.POWERUPTYPESPRING:
+			powerup = (GameObject)Instantiate(powerupSpring, new Vector3(position.x, position.y + 0.15f, position.z), Quaternion.Euler(new Vector3(-90f,0f,0f)));
+			powerup.GetComponent<PowerUp>().PowerUpType = powerType;
 			break;
 		}
+		return powerup;
 	}
 
 	void GenerateRoomStuff(int roomType, Vector3 roomCenter){
 		if (roomType == 0){
-			// office
+			/* decide interior type
+			 * 0: office
+			 * 1: machine room
+			 */ 
+			int interiorType = 0;
+			if (Random.Range(0f,100f) <= machineRoomChance){
+				interiorType = 1;
+			}
+
+			// room location vars
 			float relX = roomCenter.x;
 			float relY = roomCenter.y;
 			float relZ = roomCenter.z;
 			int rotation;
-			//Office is super simple. Double for loop to make a grid of nodes or cubicles.
+
+			// Double for loop to make a grid of nodes or furniture.
 			for(float x = (relX-12);x<=(relX+12);x+=4){
 				for(float z = (relZ-12);z<=(relZ+12);z+=4){
 					rotation = (Random.Range (0,4)*90);
 					if(x != relX && z != relZ){
-						if (Random.Range(0,101) <= cubicleChance){
-							Instantiate(cubiclePreFab, new Vector3(x,relY,z), Quaternion.Euler(new Vector3(270f, rotation, 0)));
+						if (Random.Range(0f,100f) <= furnitureChance){
+							switch(interiorType){
+								case 0:{
+									if (Random.Range(0f,100f) <= 70f){
+										Instantiate(cubiclePreFab, new Vector3(x,relY,z), Quaternion.Euler(new Vector3(270f, rotation, 0)));
+									} else{
+										Instantiate(shelfPreFab, new Vector3(x,relY,z), Quaternion.Euler(new Vector3(270f, rotation, 0)));
+									}
+									break;
+								}
+								case 1:{
+									Instantiate(machinePreFab, new Vector3(x,relY,z), Quaternion.Euler(new Vector3(270f, rotation, 0)));
+									break;
+								}
+							}
 						} else{
 							Instantiate(node, new Vector3(x,(relY+0.5f),z), Quaternion.identity);
 						}
@@ -253,7 +320,7 @@ public class BuildingGen : MonoBehaviour {
 		// choose to block off the door and generate a powerup or block off entire wall
 		if (Random.Range(0f,100f) <= powerupChance){
 			Instantiate(endBlocker, new Vector3(32.5f*xMultiplier+roomCenter.x,4f,32.5f*zMultiplier+roomCenter.z), Quaternion.Euler(new Vector3(0f,90f*zMultiplier,0f)));
-			GeneratePowerUp(new Vector3(28f*xMultiplier+roomCenter.x,0f,28f*zMultiplier+roomCenter.z));
+			powerupList.Add(GeneratePowerUp(new Vector3(28f*xMultiplier+roomCenter.x,0f,28f*zMultiplier+roomCenter.z)));
 		} else{
 			Instantiate(doorBlocker, new Vector3(15f*xMultiplier+roomCenter.x,5f,15f*zMultiplier+roomCenter.z), Quaternion.Euler(new Vector3(0f,90f*zMultiplier,0f)));
 		}
