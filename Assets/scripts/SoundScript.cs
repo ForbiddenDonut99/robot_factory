@@ -10,6 +10,6 @@ public class SoundScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		audio.PlayOneShot (sound);
+		audio.PlayOneShot (sound, OptionsMenu.sfx);
 	}
 }

@@ -198,7 +198,7 @@ public class RobotController: MonoBehaviour
 		if (Input.GetKeyDown(KeyCode.F)){
 			if(scopeEnabled){
 				flashLight.enabled = !flashLight.enabled;
-				audio.PlayOneShot (flashlightSound);
+				audio.PlayOneShot (flashlightSound, OptionsMenu.sfx);
 			}
 		}
 
@@ -216,7 +216,7 @@ public class RobotController: MonoBehaviour
 				}
 				stunGunAmmo --;
 				ammoText.text = "AMMO: " + stunGunAmmo;
-				audio.PlayOneShot (gunSound);
+				audio.PlayOneShot (gunSound, OptionsMenu.sfx);
 			}
 		}
 
@@ -238,7 +238,7 @@ public class RobotController: MonoBehaviour
 		}
 		if(Input.GetKeyDown(KeyCode.W)||Input.GetKeyDown(KeyCode.S)){
 			if(speed > 7.0f){
-				audio.PlayOneShot(wheelSound);
+				audio.PlayOneShot(wheelSound, OptionsMenu.sfx);
 				audio.loop = true;
 			}
 			else{
