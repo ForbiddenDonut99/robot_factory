@@ -39,7 +39,7 @@ public class BuildingGen : MonoBehaviour {
 	GameObject escapePad;
 	
 	float roomWidth = 68f; // size of the rooms
-	public float powerupChance = 25f;
+	public float powerupChance = 40f;
 	public float guardChance = 80f;
 
 	// within the room
