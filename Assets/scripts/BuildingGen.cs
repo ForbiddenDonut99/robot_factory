@@ -23,6 +23,7 @@ public class BuildingGen : MonoBehaviour {
 	GameObject powerupCompass;
 	GameObject powerupSpring;
 	GameObject guard;
+	GameObject otherRobot;
 
 	List<GameObject> powerupList = new List<GameObject>();
 	ArrayList availablePowerUpTypes = new ArrayList();
@@ -62,6 +63,7 @@ public class BuildingGen : MonoBehaviour {
 		powerupCompass = (GameObject)Resources.Load("Powerup-Compass");
 		powerupSpring = (GameObject)Resources.Load("Powerup-Spring");
 		guard = (GameObject)Resources.Load("Guard");
+		otherRobot = (GameObject)Resources.Load("OtherRobot");
 		
 		player = (GameObject)Resources.Load("PlayerRobot");
 		conveyorBelt = (GameObject)Resources.Load("ConveyorBelt");
@@ -175,6 +177,11 @@ public class BuildingGen : MonoBehaviour {
 						// generate player
 						Instantiate(player, new Vector3(-12f+i*roomWidth,3f,j*roomWidth), Quaternion.Euler(new Vector3(0f,90f,0f)));
 						Instantiate(conveyorBelt, new Vector3(-12f+i*roomWidth,-1f,j*roomWidth), Quaternion.Euler(new Vector3(-90f,0f,0f)));
+						for(int k = -3; k < 4; k++){
+							if(k != 0){
+								Instantiate(otherRobot, new Vector3(-12f+i*roomWidth,3f,j*roomWidth+4f*k), Quaternion.Euler(new Vector3(0f,90f,0f)));
+							}
+						}
 					} else if (roomType == -2){
 						// generate escape pad
 						Instantiate(escapePad, new Vector3(0f+i*roomWidth,0.2f,0f+j*roomWidth), Quaternion.identity);

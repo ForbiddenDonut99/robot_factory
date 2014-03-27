@@ -17,8 +17,9 @@ public class ConveyorBelt : MonoBehaviour {
 
 	void OnTriggerStay (Collider other) {
 		if(other.tag == "Player"){
-			Transform playerTransform = other.transform;
-			playerTransform.position = new Vector3(playerTransform.position.x,playerTransform.position.y,playerTransform.position.z + Time.deltaTime * beltSpeed);
+			other.transform.position = new Vector3(other.transform.position.x,other.transform.position.y,other.transform.position.z + Time.deltaTime * beltSpeed * .6f);
+		} else{
+			other.transform.position = new Vector3(other.transform.position.x,other.transform.position.y,other.transform.position.z + Time.deltaTime * beltSpeed);
 		}
 	}
 }
